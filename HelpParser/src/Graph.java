@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sound.midi.MidiDevice.Info;
 
@@ -32,11 +33,22 @@ public class Graph {
 	}
 	
 
-	public void process(){
+	public List<Edge> process(){
 		Map<String, List<Information>> edgeMap = getInformationsByEdge();
-		for (char c = 'A'; c <= 'Z'; c++) {
-			
+		List<Edge> edges = new ArrayList<Edge>();
+		for (Entry<String, List<Information>> entry : edgeMap.entrySet()) {
+			edges.add(new Edge(entry.getKey(), entry.getValue()));
 		}
+		
+		return edges;
+	}
+
+	private Map<String, Integer> getNewMapCategories() {
+		Map<String, Integer> mapCategories = new HashMap<String, Integer>();
+		for (char c ='A'; c <= 'Z'; c++) {
+			mapCategories.put(Character.toString(c), 0);
+		}
+		return mapCategories;
 	}
 
 	private Map<String, List<Information>> getInformationsByEdge() {

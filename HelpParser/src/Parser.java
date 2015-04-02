@@ -16,7 +16,7 @@ public class Parser {
 			filePath = args[1];
 		List<Graph> graphs = parseFile(filePath);
 		saveAsCsv("all.csv", graphs);
-		processAndSaveAsCsv("all.csv", graphs);
+//		processAndSaveAsCsv("all.csv", graphs);
 
 	}
 
@@ -43,10 +43,10 @@ public class Parser {
 	}
 
 	private static void saveAsCsv(String filePath, List<Graph> graphs) throws IOException {
-		String strData = "";
+		String strData = "graph,edge,category,catID" + System.lineSeparator();
 		for (Graph graph : graphs) {
 			for (Information info : graph.getInformations()) {
-				strData += "graph-"+graph.getId()+";"+"edge-"+info.getEdgeId()+";"+info.getCategory()+";"+info.getCategoryId()+System.lineSeparator();
+				strData += "graph-"+graph.getId()+","+"edge-"+info.getEdgeId()+","+info.getCategory()+","+info.getCategoryId()+System.lineSeparator();
 			}
 		}
 		FileWriter fw = new FileWriter(new File(filePath));
@@ -56,9 +56,8 @@ public class Parser {
 	private static void processAndSaveAsCsv(String filePath, List<Graph> graphs) throws IOException {
 		String strData = "";
 		for (Graph graph : graphs) {
-			for (Information info : graph.getInformations()) {
-				strData += "graph-"+graph.getId()+";"+"edge-"+info.getEdgeId()+";"+info.getCategory()+";"+info.getCategoryId()+System.lineSeparator();
-			}
+			List<Edge> edges = graph.process();	
+			
 		}
 		FileWriter fw = new FileWriter(new File(filePath));
 		fw.write(strData);
