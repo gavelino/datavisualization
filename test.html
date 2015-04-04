@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+svg {
+  padding: 10px 0 0 10px;
+}
+
+.arc {
+  stroke: #fff;
+}
+
+</style>
+<body>
+<script src="file:d3.min.js"></script>
+
+<script>
+
+var radius = 74,
+    padding = 10;
+
+var color = d3.scale.ordinal()
+    .range(["#393b79","#5254a3","#6b6ecf","#9c9ede","#637939","#8ca252","#b5cf6b","#cedb9c","#8c6d31","#bd9e39","#e7ba52","#e7cb94","#843c39","#ad494a","#d6616b","#e7969c","#7b4173","#a55194","#ce6dbd","#de9ed6","#1f77b4	","#aec7e8	","#ff7f0e	","#ffbb78	","#2ca02c	","#98df8a	","#d62728	","#ff9896	","#9467bd	","#c5b0d5	","#8c564b	","#c49c94	","#e377c2	","#f7b6d2	","#7f7f7f	","#c7c7c7	","#bcbd22	","#dbdb8d	","#17becf	","#9edae5"]);
+// var color = d3.scale.category20c();
+
+var arc = d3.svg.arc()
+    .outerRadius(radius)
+    .innerRadius(radius - 30);
+
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.population; });
+    
+
+
+
+d3.csv('test.csv', function (error, data) {
+  var labels = getLabels();
+  color.domain(labels);  
+  var allGraphs = getGraphs(data);
+  
+  var buildNewData = function(graphNumber){
+    var ages = allGraphs[graphNumber].edges.map(function(edge) {
+        return countCategories(edge.categories);
+    });
+    var list = []
+    var ret = new Object();
+    var count = 0;
+    // ages.forEach(function(x){console.log(x)});
+    ages.forEach(function(x){
+      ret = new Object();
+      ret["State"] = "G"+graphNumber+"E"+count++; 
+      x.forEach(function(y)
+      {
+        ret[y.name] = y.population;
+      })
+      ret["ages"] = x;
+      list.push(ret);
+    });
+    return list;
+  };
+  
+  drawLegend(color);
+  var listGraphs = buildNewData(0);
+  for (var i=1; i<allGraphs.length; i++){
+    var newGraph = buildNewData(i);
+    console.log(newGraph);
+    listGraphs = listGraphs.concat(newGraph);
+  }
+  console.log(listGraphs);
+  drawGraph(listGraphs);
+  //console.log(newData);
+
+  
+
+});
+
+var drawGraph = function(data,i){
+  
+  var svg = d3.select("body").selectAll(".pie")
+      .data(function(){   console.log(data);  
+        return data;})
+    .enter().append("svg")
+      .attr("class", "pie")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2)
+    .append("g")
+      .attr("transform", "translate(" + radius + "," + radius + ")");
+
+  svg.selectAll(".arc")
+      .data(function(d) { return pie(d.ages); })
+    .enter().append("path")
+      .attr("class", "arc")
+      .attr("d", arc)
+      .style("fill", function(d) { //console.log(d.data); 
+        return color(d.data.name ); });
+
+  svg.append("text")
+      .attr("dy", ".35em")
+      .style("text-anchor", "middle")
+      .text(function(d) { return d.State; });
+}
+var drawLegend = function(color){
+  var legend = d3.select("body").append("svg")
+      .attr("class", "legend")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2)
+    .selectAll("g")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function(d) { return d; });
+}
+
+var getGraphs = function(data){
+  var graphs = [];
+  var tempData = data;
+  while  (tempData.length > 0) {
+    var firstGraphName = tempData[1].graph;
+    var graph = tempData.filter(function (d) {
+      return d.graph == firstGraphName;
+    });
+    
+    var edge = graph[1].edge;
+    
+    var edgeNames = getEdgeNames(graph, firstGraphName);   
+    
+    var edges = [];
+    
+    for (edgeName of edgeNames) {
+      var categories = getCategories(graph, edgeName);
+      edges.push({edge: edgeName, categories: categories});
+    }
+    
+    
+    
+    //console.log(categories.sort());
+    tempData = tempData.filter(function (d) {
+      return d.graph != firstGraphName;
+    });
+    
+    graphs.push({graph: firstGraphName, edges: edges});
+    size = tempData.legth;
+  }
+  return graphs;
+};
+
+var getCategories = function(graph, edgeName){
+    var filteredEdges = graph.filter(function (d) {
+      return d.edge == edgeName;
+    });
+    var categories = filteredEdges.map(function (x) {
+      return {category: x.category, catId: x.catID};
+    })
+    return categories;
+}
+
+var getEdgeNames = function(graph, firstGraphName){
+    var objects = graph.filter(function (d) {
+      return d.graph == firstGraphName;
+    });
+    var edgeNames = objects.map(function (x) {
+      return x.edge;
+    });
+    var setEdge = new Set(edgeNames);
+    //for(var e in edgeNames){
+    //  setEdge.add(e);
+    //}
+    return setEdge;
+};
+
+var countCategories = function(categories){
+  var retList = [];
+  for(var c = 'A'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++ ) {
+    var ch = String.fromCharCode(c);
+    var list = categories.filter(function (d) {
+      return d.category == ch;
+    });
+    retList.push({name: ch, population: list.length});
+  }
+  return retList;  
+}; 
+
+var getLabels = function(){
+  var list = [];
+  for(var c = 'A'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++ ) {
+    var ch = String.fromCharCode(c);
+    list.push(ch);
+  }
+  return list; 
+};
+
+</script>
