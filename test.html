@@ -64,7 +64,6 @@ d3.csv('test.csv', function (error, data) {
     return list;
   };
   
-  drawLegend(color);
   var listGraphs = buildNewData(0);
   for (var i=1; i<allGraphs.length; i++){
     var newGraph = buildNewData(i);
@@ -73,6 +72,8 @@ d3.csv('test.csv', function (error, data) {
   }
   console.log(listGraphs);
   drawGraph(listGraphs);
+  
+  drawLegend(color);
   //console.log(newData);
 
   
@@ -107,21 +108,21 @@ var drawGraph = function(data,i){
 var drawLegend = function(color){
   var legend = d3.select("body").append("svg")
       .attr("class", "legend")
-      .attr("width", radius * 2)
+      .attr("width", radius * 8)
       .attr("height", radius * 2)
     .selectAll("g")
       .data(color.domain().slice().reverse())
     .enter().append("g")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+      .attr("transform", function(d, i) { return "translate(" + i * 20 + ", 0)"; });
 
   legend.append("rect")
       .attr("width", 18)
-      .attr("height", 18)
+      .attr("height", 8)
       .style("fill", color);
 
   legend.append("text")
-      .attr("x", 24)
-      .attr("y", 9)
+      .attr("x", 5)
+      .attr("y", 15)
       .attr("dy", ".35em")
       .text(function(d) { return d; });
 }
