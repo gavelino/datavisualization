@@ -40,61 +40,52 @@ var pie = d3.layout.pie()
 
 d3.csv('all.csv', function (error, data) {
   var labels = getLabels();
+
   color.domain(labels);  
+
   var allGraphs = getGraphs(data);
   
   var buildNewData = function(graphNumber){
-    var ages = allGraphs[graphNumber].edges.map(function(edge) {
-        return countCategories(edge.categories);
-    });
     var list = []
-    var ret = new Object();
-    var count = 0;
-    // ages.forEach(function(x){console.log(x)});
-    ages.forEach(function(x){
-      ret = new Object();
-      ret["State"] = "G"+graphNumber+"E"+count++; 
-      x.forEach(function(y)
-      {
-        ret[y.name] = y.population;
-      })
-      ret["ages"] = x;
-      list.push(ret);
-    });
+
+    for (edge of allGraphs[graphNumber].edges) {
+      	var ret = new Object();
+      	ret["State"] = "G"+graphNumber+"E"+(edge.edge); 
+      	
+      	countCategories(edge.categories).forEach(function(y) {
+        	ret[y.name] = y.population;
+      	})
+
+      	ret["ages"] = countCategories(edge.categories);
+      	list.push(ret);
+    }
+
     return list;
   };
   
   var listGraphs = buildNewData(0);
-  for (var i=1; i<allGraphs.length; i++){
-    var newGraph = buildNewData(i);
-    console.log(newGraph);
-    listGraphs = listGraphs.concat(newGraph);
+  for (var i = 1; i < allGraphs.length; i++){
+    listGraphs = listGraphs.concat(buildNewData(i));
+    //drawGraph(buildNewData(i));
   }
-  console.log(listGraphs);
+  
   drawGraph(listGraphs);
-  
   drawLegend(color);
-  //console.log(newData);
-
-  
-
 });
 
 var drawGraph = function(data,i){
   
   var svg = d3.select("body").selectAll(".pie")
-      .data(function(){   console.log(data);  
-        return data;})
-    .enter().append("svg")
+  	.data(data).enter().append("svg")
       .attr("class", "pie")
       .attr("width", radius * 2)
       .attr("height", radius * 2)
-    .append("g")
+      .append("g")
       .attr("transform", "translate(" + radius + "," + radius + ")");
 
   svg.selectAll(".arc")
       .data(function(d) { return pie(d.ages); })
-    .enter().append("path")
+      .enter().append("path")
       .attr("class", "arc")
       .attr("d", arc)
       .style("fill", function(d) { //console.log(d.data); 
@@ -105,6 +96,7 @@ var drawGraph = function(data,i){
       .style("text-anchor", "middle")
       .text(function(d) { return d.State; });
 }
+
 var drawLegend = function(color){
   var legend = d3.select("body").append("svg")
       .attr("class", "legend")
@@ -129,34 +121,35 @@ var drawLegend = function(color){
 
 var getGraphs = function(data){
   var graphs = [];
+
   var tempData = data;
   while  (tempData.length > 0) {
-    var firstGraphName = tempData[1].graph;
+  	// Identificador do grafo a ser tratado
+    var graphName = tempData[0].graph;
+    
+    // Filtra pelo grafo a tratar
     var graph = tempData.filter(function (d) {
-      return d.graph == firstGraphName;
+      return d.graph == graphName;
     });
     
-    var edge = graph[1].edge;
-    
-    var edgeNames = getEdgeNames(graph, firstGraphName);   
-    
+    // Obtem os identificadores dos nos
+    var edgeNames = getEdgeNames(graph);   
+
+    // obtem a lista de areas
     var edges = [];
-    
     for (edgeName of edgeNames) {
       var categories = getCategories(graph, edgeName);
       edges.push({edge: edgeName, categories: categories});
     }
     
-    
-    
     //console.log(categories.sort());
     tempData = tempData.filter(function (d) {
-      return d.graph != firstGraphName;
+      return d.graph != graphName;
     });
     
-    graphs.push({graph: firstGraphName, edges: edges});
-    size = tempData.legth;
+    graphs.push({graph: graphName, edges: edges});
   }
+
   return graphs;
 };
 
@@ -164,23 +157,21 @@ var getCategories = function(graph, edgeName){
     var filteredEdges = graph.filter(function (d) {
       return d.edge == edgeName;
     });
+
     var categories = filteredEdges.map(function (x) {
       return {category: x.category, catId: x.catID};
     })
+
     return categories;
 }
 
-var getEdgeNames = function(graph, firstGraphName){
-    var objects = graph.filter(function (d) {
-      return d.graph == firstGraphName;
-    });
-    var edgeNames = objects.map(function (x) {
+var getEdgeNames = function(graph){
+    var edgeNames = graph.map(function (x) {
       return x.edge;
     });
+    
     var setEdge = new Set(edgeNames);
-    //for(var e in edgeNames){
-    //  setEdge.add(e);
-    //}
+
     return setEdge;
 };
 
@@ -196,12 +187,16 @@ var countCategories = function(categories){
   return retList;  
 }; 
 
+/*
+ *
+ */
 var getLabels = function(){
   var list = [];
+
   for(var c = 'A'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++ ) {
-    var ch = String.fromCharCode(c);
-    list.push(ch);
+    list.push(String.fromCharCode(c));
   }
+
   return list; 
 };
 
