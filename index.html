@@ -65,31 +65,40 @@ d3.csv('all.csv', function (error, data) {
   
   var listGraphs = buildNewData(0);
   for (var i = 1; i < allGraphs.length; i++){
-    listGraphs = listGraphs.concat(buildNewData(i));
-    //drawGraph(buildNewData(i));
+  	// Prepara regiao para os graficos de cada grafo
+  	var d = d3.select("body")
+  		.append("div")
+  		.attr("class", "graph"+(i-1))
+  		.append("h1")
+  		.text("Graph " + (i-1));
+    
+    // Desenha os graficos em sua respectiva região
+    drawGraph(buildNewData(i), (i - 1));
   }
   
-  drawGraph(listGraphs);
+  // Desenha a legenda das cores
   drawLegend(color);
 });
 
-var drawGraph = function(data,i){
+var drawGraph = function(data, i){
   
-  var svg = d3.select("body").selectAll(".pie")
+  var svg = d3.select("body").select(".graph"+i).selectAll(".pie")
   	.data(data).enter().append("svg")
       .attr("class", "pie")
       .attr("width", radius * 2)
-      .attr("height", radius * 2)
-      .append("g")
-      .attr("transform", "translate(" + radius + "," + radius + ")");
+      .attr("height", radius * 2);
+      
+  svg = svg.append("g").attr("transform", "translate(" + radius + "," + radius + ")");
 
-  svg.selectAll(".arc")
+  arcs = svg.selectAll(".arc")
       .data(function(d) { return pie(d.ages); })
-      .enter().append("path")
+      .enter()
+      .append("path")
       .attr("class", "arc")
       .attr("d", arc)
-      .style("fill", function(d) { //console.log(d.data); 
-        return color(d.data.name ); });
+      .style("fill", function(d) {
+        return color(d.data.name );
+      });
 
   svg.append("text")
       .attr("dy", ".35em")
