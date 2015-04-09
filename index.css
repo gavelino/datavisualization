@@ -1,16 +1,28 @@
+html, body {
+    width: 5000;
+}
+
 #graphs-list, #graphs-area, #legend-area {
     padding-left: 20px;
-    padding-right: 20px;
+    padding-right: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
 #legend-area {
     padding-top: 25px;
+}  
+
+#graphs-list {
+    z-index: 1000;
+    background-color: white;
 }
 
-#graphs-area {
-    min-width: 50%;
+#graphs-list {
+    position:fixed;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100%;
 }
 
 .list-group-item {

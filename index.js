@@ -3,12 +3,27 @@ var appData;
 function loadMenu() {
     $.each(appData.graphs, function(i, object){
         jQuery('<a/>', {
-            id: 'graph'+i,
-            href: '#',
-            class: 'list-group-item text-center ' + (i == 0? 'active' : ''),
-            text: 'Grafo '+i
+            class: 'list-group-item text-center graph_menu',
+            text: 'Grafo '+i,
+            graphId: i,
+            style: "cursor:pointer"
+        }).click(function(event){
+            refreshGraph($(event.target).attr("graphId"));
         }).appendTo('.list-group');
     });
+}; 
+
+function refreshGraph(i) {
+    $("#graphs-area").hide();
+    $("#legend-area").hide();
+    $("#loading").show();
+    drawGraph(appData.graphs[i], i);
+    drawLegend(color);
+    $(".graph_menu.active").removeClass("active");
+    $("a.graph_menu[graphId="+i+"]").addClass("active");
+    $("#loading").hide();
+    $("#graphs-area").show();
+    $("#legend-area").show();
 };
 
 function configureColors() {
@@ -21,7 +36,7 @@ function configureColors() {
 }
 
 var radius = 74,
-    padding = 10;
+    padding = 10; 
 
 var color = d3.scale.ordinal()
     .range(["#393b79","#5254a3","#6b6ecf","#9c9ede","#637939","#8ca252","#b5cf6b","#cedb9c","#8c6d31","#bd9e39","#e7ba52","#e7cb94","#843c39","#ad494a","#d6616b","#e7969c","#7b4173","#a55194","#ce6dbd","#de9ed6","#1f77b4	","#aec7e8	","#ff7f0e	","#ffbb78	","#2ca02c	","#98df8a	","#d62728	","#ff9896	","#9467bd	","#c5b0d5	","#8c564b	","#c49c94	","#e377c2	","#f7b6d2	","#7f7f7f	","#c7c7c7	","#bcbd22	","#dbdb8d	","#17becf	","#9edae5"]);
@@ -35,11 +50,14 @@ var pie = d3.layout.pie()
     .value(function(d) { return d.count; });
 
 var drawGraph = function(graph, i){
-    // Prepara regiao para os graficos de cada grafo
+    $("#graphs-area-content").empty();
+    
+    $("#graphs-area-content").width(1500);
+
     var svg = d3.select("#graphs-area-content")
         .append("svg")
         .attr("width", 1500)
-        .attr("height", 1500);
+        .attr("height", 500);
     
     $.each(graph, function(j, person) {
         var localData = [];
@@ -73,6 +91,8 @@ var drawGraph = function(graph, i){
 };
 
 var drawLegend = function(color){
+    $("#legend-area-content").empty();
+    
     var legend = d3.select("#legend-area-content")
         .append("svg")
         .attr("class", "legend")
@@ -99,9 +119,5 @@ $.getJSON("data.json", function(data){
     appData = data;
     loadMenu();
     configureColors();
-    drawGraph(appData.graphs[0], 0);
-    drawLegend(color);
-    $("#loading").hide();
-    $("#graphs-area").show();
-    $("#legend-area").show();
+    refreshGraph(0);
 });
