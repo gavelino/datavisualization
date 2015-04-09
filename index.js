@@ -36,7 +36,7 @@ var pie = d3.layout.pie()
 
 var drawGraph = function(graph, i){
     // Prepara regiao para os graficos de cada grafo
-    var svg = d3.select("#graphs-area")
+    var svg = d3.select("#graphs-area-content")
         .append("svg")
         .attr("width", 1500)
         .attr("height", 1500);
@@ -73,7 +73,7 @@ var drawGraph = function(graph, i){
 };
 
 var drawLegend = function(color){
-    var legend = d3.select("#legend-area")
+    var legend = d3.select("#legend-area-content")
         .append("svg")
         .attr("class", "legend")
         .attr("width", radius * 2)
