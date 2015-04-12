@@ -1,7 +1,6 @@
 // Variavel que armazena os dados do problema
 // É um mapa que contém os grafos e as distancias entre todos vertices de todos os grafos
 var appData;
-
 // Função que carrega o menu à esquerda (lista de grafos)
 function loadMenu() {
     $.each(appData.graphs, function(i, object){
@@ -26,6 +25,7 @@ function refreshGraph(i) {
     // Chama a função que realmente desenha o grafo e a legenda
     drawGraph(appData.graphs[i], i);
     drawLegend(color);
+    drawOnDemand();
     
     // Ativa (deixa azul) o grafo selecionado na lista lateral
     $(".graph_menu.active").removeClass("active");
@@ -102,18 +102,56 @@ var drawGraph = function(graph, i){
             .style("fill", function(d) {
                 return color(d.data.category);
             })
-            .append("title").text(function(d){return d.value;});
+            //.append("title").text(function(d){return d.value;});
 
         pPie.append("text")
             .attr("dy", ".35em")
             .attr("transform", "translate(" + radius + "," + radius + ")")
             .style("text-anchor", "middle")
             .text("G"+i+"E"+j);
-        
-        
-        
+
+
+        /*Informações*/
+        var path = svg.selectAll('path');
+        var tooltip = d3.select('#graphs-area-content')                               
+            .append('div')                                                
+            .attr('class', 'tooltip2');                                    
+          
+        tooltip.append('div')                                           
+            .attr('class', 'label');                                      
+
+        tooltip.append('div')                                           
+            .attr('class', 'count');                                      
+
+        tooltip.append('div')                                           
+          .attr('class', 'percent');                                    
+
+        path.on('mouseover', function(d) {                            
+            var total = d3.sum(localData.map(function(d) {                
+              return d.count;                                           
+            }));                                                        
+            var percent = Math.round(1000 * d.data.count / total) / 10; 
+            tooltip.select('.label').html(d.data.category);                
+            tooltip.select('.count').html(d.data.count);                
+            tooltip.select('.percent').html(percent + '%');             
+            tooltip.style('display', 'block');                          
+            tooltip.style('top', (d3.event.pageY + 10) + 'px')          
+                .style('left', (d3.event.pageX - 450) + 'px');             
+        });                                                           
+
+        path.on('mouseout', function() {                              
+            tooltip.style('display', 'none');                           
+        });                                                           
     });
 };
+
+/*Exibe os dados on-demand*/
+function drawOnDemand(){
+
+
+};
+
+
 
 // Função que desenha a legenda na area reservada do html
 var drawLegend = function(color){
@@ -140,6 +178,7 @@ var drawLegend = function(color){
         .attr("dy", ".35em")
         .text(function(d) { return d; });
 };
+
 
 
 // Executado no carregamento da pagina, para preencher com o grafo 0
