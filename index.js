@@ -106,6 +106,7 @@ var drawGraph = function(graph, i){
 
         pPie.append("text")
             .attr("dy", ".35em")
+            .attr("transform", "translate(" + radius + "," + radius + ")")
             .style("text-anchor", "middle")
             .text("G"+i+"E"+j);
         
@@ -257,7 +258,7 @@ function vectorDotProduct(vector1, vector2) {
 	return result;
 }
 function computeXPosition(i, j, person, width, radius) {
-	return ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - radius);
+	return ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - 2*radius);
 }
 function computeYPosition(i, j, person, height, radius) {
 	var norm = vectorNorm(personToVector(person));
