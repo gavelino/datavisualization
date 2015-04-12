@@ -49,7 +49,7 @@ function configureColors() {
 
 
 // Raio de uma "rosquinha"
-var radius = 74,
+var radius = 60,
     padding = 10; 
 
 // Intervalo de cores disponiveis
@@ -59,7 +59,7 @@ var color = d3.scale.ordinal()
 // ....
 var arc = d3.svg.arc()
     .outerRadius(radius)
-    .innerRadius(radius - 30);
+    .innerRadius(radius - 20);
 
 // ....
 var pie = d3.layout.pie()
