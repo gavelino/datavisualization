@@ -85,12 +85,11 @@ var drawGraph = function(graph, i){
             localData.push({category : k, count : category.length});
         });
         
-        var xPosition = computeXPosition(i, j, person, width, radius);
-        var yPosition = computeYPosition(i, j, person, height, radius);
+        var xy = computePosition(i, j, person, width, height, radius);
         
         var pPie = svg.append("g")
             //.attr("transform", "translate(" + (j-1)*radius*2 + "," + yPosition + ")")
-            .attr("transform", "translate(" + xPosition + "," + yPosition + ")")
+            .attr("transform", "translate(" + xy[0] + "," + xy[1] + ")")
             .selectAll(".arc")
             .data(function(d) { return pie(localData); })
             .enter();
@@ -106,7 +105,9 @@ var drawGraph = function(graph, i){
 
         pPie.append("text")
             .attr("dy", ".35em")
-            .attr("transform", "translate(" + radius + "," + radius + ")")
+            //.attr("transform", "translate(" + radius + "," + radius + ")")
+            .attr("x", radius)
+            .attr("y", radius)
             .style("text-anchor", "middle")
             .text("G"+i+"E"+j);
 

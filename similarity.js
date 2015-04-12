@@ -1,3 +1,14 @@
+String.prototype.hashCode = function() {
+    var hash = 0, i, chr, len;
+    if (this.length == 0) return hash;
+    for (i = 0, len = this.length; i < len; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+};
+
 
 // Daqui para baixo são funcões para calcular a similaridade e posição das pessoas.
 function computeStatistics(appData) {
@@ -101,12 +112,13 @@ function vectorDotProduct(vector1, vector2) {
 	}
 	return result;
 }
-function computeXPosition(i, j, person, width, radius) {
-	return ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - 2*radius);
-}
-function computeYPosition(i, j, person, height, radius) {
+function computePosition(i, j, person, width, height, radius) {
+	var xpos = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - 2*radius);
+	
 	var norm = vectorNorm(personToVector(person));
 	var delta = (stats.maxNorm - norm) / (stats.maxNorm - stats.minNorm);
 	var pos = (delta * (height - 2*radius));
-	return pos;
+	var ypos = pos;
+	
+	return [xpos, ypos];
 }
