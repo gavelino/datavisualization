@@ -14,7 +14,7 @@ function loadMenu() {
             refreshGraph($(event.target).attr("graphId"));
         }).appendTo('.list-group');
     });
-}; 
+};
 
 // Função que trata a mudança de grafos (clique em um grafo da lista lateral)
 function refreshGraph(i) {
@@ -70,10 +70,10 @@ var pie = d3.layout.pie()
 var drawGraph = function(graph, i){
     $("#graphs-area-content").empty();
     
-    $("#graphs-area-content").width(1500);
+    var width = 1200;
+    var height = 600;
+    $("#graphs-area-content").width(width);
 
-    var width = 1500;
-    var height = 500;
     var svg = d3.select("#graphs-area-content")
         .append("svg")
         .attr("width", width)
@@ -85,12 +85,12 @@ var drawGraph = function(graph, i){
             localData.push({category : k, count : category.length});
         });
         
-        var xPosition = computeXPosition(person, width, radius);
-        var yPosition = computeYPosition(person, height, radius);
+        var xPosition = computeXPosition(i, j, person, width, radius);
+        var yPosition = computeYPosition(i, j, person, height, radius);
         
         var pPie = svg.append("g")
-            .attr("transform", "translate(" + (j-1)*radius*2 + "," + yPosition + ")")
-            //.attr("transform", "translate(" + xPosition + "," + yPosition + ")")
+            //.attr("transform", "translate(" + (j-1)*radius*2 + "," + yPosition + ")")
+            .attr("transform", "translate(" + xPosition + "," + yPosition + ")")
             .selectAll(".arc")
             .data(function(d) { return pie(localData); })
             .enter();
@@ -161,6 +161,7 @@ function computeStatistics(appData) {
 	var maxNorm = 0;
 	var minNorm = 1000;
 	var idf = personToVector({});
+	var sim = {};
 	
 	for (var graph in appData.graphs) {
 		for (var p in appData.graphs[graph]) {
@@ -181,12 +182,27 @@ function computeStatistics(appData) {
 		centroid[i] = centroid[i] / n;
 		idf[i] = Math.log(n/(1 + idf[i]));
 	}
+	var minSim = 1;
+	var maxSim = 0;
+	for (var graph in appData.graphs) {
+		sim[graph] = {};
+		for (var p in appData.graphs[graph]) {
+			var person = appData.graphs[graph][p];
+			var vector = personToVector(person);
+			sim[graph][p] = cosineSimilarity(vector, centroid);
+			minSim = Math.min(minSim, sim[graph][p]);
+			maxSim = Math.max(maxSim, sim[graph][p]);
+		}
+	}
 	return {
 		n: n,
 		centroid: centroid,
 		idf: idf,
 		maxNorm: maxNorm,
-		minNorm: minNorm
+		minNorm: minNorm,
+		minSim: minSim,
+		maxSim: maxSim,
+		sim: sim
 	};
 }
 
@@ -205,27 +221,27 @@ function cosineSimilarity(vector1, vector2) {
 	var r = vectorDotProduct(vector1, vector2) / (vectorNorm(vector1) * vectorNorm(vector2));
 	return r;
 }
-function centeredCosineSimilarity(vector1, vector2) {
-	var avg = personToVector({});
-	var v1 = personToVector({});
-	var v2 = personToVector({});
-	avg = vectorAvg(avg, vector1, vector2);
-	v1 = vectorMinus(v1, vector1, avg);
-	v2 = vectorMinus(v2, vector2, avg);
-	return cosineSimilarity(v1, v2);
-}
-function vectorAvg(result, vector1, vector2) {
-	for (var i = 0; i < result.length; i++) {
-		result[i] = (vector1[i] + vector2[i]) / 2;
-	}
-	return result;
-}
-function vectorMinus(result, vector1, vector2) {
-	for (var i = 0; i < result.length; i++) {
-		result[i] = vector1[i] - vector2[i];
-	}
-	return result;
-}
+//function centeredCosineSimilarity(vector1, vector2) {
+//	var avg = personToVector({});
+//	var v1 = personToVector({});
+//	var v2 = personToVector({});
+//	avg = vectorAvg(avg, vector1, vector2);
+//	v1 = vectorMinus(v1, vector1, avg);
+//	v2 = vectorMinus(v2, vector2, avg);
+//	return cosineSimilarity(v1, v2);
+//}
+//function vectorAvg(result, vector1, vector2) {
+//	for (var i = 0; i < result.length; i++) {
+//		result[i] = (vector1[i] + vector2[i]) / 2;
+//	}
+//	return result;
+//}
+//function vectorMinus(result, vector1, vector2) {
+//	for (var i = 0; i < result.length; i++) {
+//		result[i] = vector1[i] - vector2[i];
+//	}
+//	return result;
+//}
 function vectorNorm(vector1) {
 	var norm = 0;
 	for (var i = 0; i < vector1.length; i++) {
@@ -240,18 +256,12 @@ function vectorDotProduct(vector1, vector2) {
 	}
 	return result;
 }
-function computeXPosition(person, width, radius) {
-	var vector = personToVector(person);
-	var sim = cosineSimilarity(vector, stats.centroid);
-	console.log(sim);
-	return (1 - sim) * radius;
+function computeXPosition(i, j, person, width, radius) {
+	return ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - radius);
 }
-function computeYPosition(person, height, radius) {
-	var cnorm = vectorNorm(stats.centroid);
+function computeYPosition(i, j, person, height, radius) {
 	var norm = vectorNorm(personToVector(person));
-	var range = Math.max(cnorm - stats.minNorm, stats.maxNorm - cnorm);
-	var delta = (norm - cnorm) / range;
-	var pos = (height/2) - radius + (delta * (height/2 - radius));
-	console.log(pos);
+	var delta = (stats.maxNorm - norm) / (stats.maxNorm - stats.minNorm);
+	var pos = (delta * (height - 2*radius));
 	return pos;
 }
