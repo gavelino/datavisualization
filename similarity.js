@@ -18,6 +18,7 @@ function computeStatistics(appData) {
 	var minNorm = 1000;
 	var idf = personToVector({});
 	var sim = {};
+	var top2 = {};
 	
 	for (var graph in appData.graphs) {
 		for (var p in appData.graphs[graph]) {
@@ -42,12 +43,19 @@ function computeStatistics(appData) {
 	var maxSim = 0;
 	for (var graph in appData.graphs) {
 		sim[graph] = {};
+		top2[graph] = {};
 		for (var p in appData.graphs[graph]) {
 			var person = appData.graphs[graph][p];
 			var vector = personToVector(person);
-			sim[graph][p] = cosineSimilarity(vector, centroid);
+			var v1 = tfIdf(vector, idf);
+			var v2 = tfIdf(centroid, idf);
+//			var v1 = vector;
+//			var v2 = centroid;
+			sim[graph][p] = cosineSimilarity(v1, v2);
 			minSim = Math.min(minSim, sim[graph][p]);
 			maxSim = Math.max(maxSim, sim[graph][p]);
+			
+			top2[graph][p] = findTop2(vector);
 		}
 	}
 	return {
@@ -58,7 +66,8 @@ function computeStatistics(appData) {
 		minNorm: minNorm,
 		minSim: minSim,
 		maxSim: maxSim,
-		sim: sim
+		sim: sim,
+		top2: top2
 	};
 }
 
@@ -77,27 +86,35 @@ function cosineSimilarity(vector1, vector2) {
 	var r = vectorDotProduct(vector1, vector2) / (vectorNorm(vector1) * vectorNorm(vector2));
 	return r;
 }
-//function centeredCosineSimilarity(vector1, vector2) {
-//	var avg = personToVector({});
-//	var v1 = personToVector({});
-//	var v2 = personToVector({});
-//	avg = vectorAvg(avg, vector1, vector2);
-//	v1 = vectorMinus(v1, vector1, avg);
-//	v2 = vectorMinus(v2, vector2, avg);
-//	return cosineSimilarity(v1, v2);
-//}
-//function vectorAvg(result, vector1, vector2) {
-//	for (var i = 0; i < result.length; i++) {
-//		result[i] = (vector1[i] + vector2[i]) / 2;
-//	}
-//	return result;
-//}
-//function vectorMinus(result, vector1, vector2) {
-//	for (var i = 0; i < result.length; i++) {
-//		result[i] = vector1[i] - vector2[i];
-//	}
-//	return result;
-//}
+function tfIdf(vector, idf) {
+	var tfidf = [];
+	for (var i = 0; i < vector.length; i++) {
+		if (vector[i] > 0) {
+			tfidf.push((1 + Math.log(vector[i])) * idf[i]);
+		} else {
+			tfidf.push(0);
+		}
+	}
+	return tfidf;
+}
+function findTop2(vector) {
+	var max = 0;
+	var max2 = 0;
+	var imax = 0;
+	var imax2 = 0;
+	for (var i = 0; i < vector.length; i++) {
+		if (vector[i] > max) {
+			imax2 = imax;
+			max2 = max;
+			max = vector[i];
+			imax = i;
+		} else if (vector[i] > max2) {
+			max2 = vector[i];
+			imax2 = i;
+		}
+	}
+	return [imax, imax2];
+}
 function vectorNorm(vector1) {
 	var norm = 0;
 	for (var i = 0; i < vector1.length; i++) {
@@ -114,8 +131,13 @@ function vectorDotProduct(vector1, vector2) {
 }
 function computePosition(i, j, person, width, height, radius) {
 	var normalizedSim = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (height/2 - radius);
-	var vector = personToVector(person);
-	var angle = (hashCode(vector) % 360) * (2 * Math.PI / 360);
+	//var vector = personToVector(person);
+	var top2 = stats.top2[i][j];
+	var first = top2[0];
+	var second = top2[1];
+	var catCount = "Z".charCodeAt(0) - "A".charCodeAt(0) + 1;
+	var angle = (first * (2 * Math.PI / catCount)) + second * ((2 * Math.PI / catCount)/catCount);
+	//var angle = (hashCode(vector) % 360) * (2 * Math.PI / 360);
 	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle);
 	var ypos = (height/2 - radius) + normalizedSim * Math.sin(angle);
 	
