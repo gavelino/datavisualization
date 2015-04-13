@@ -70,14 +70,41 @@ var pie = d3.layout.pie()
 var drawGraph = function(graph, i){
     $("#graphs-area-content").empty();
     
-    var width = 1200;
-    var height = 600;
+    var width = 900;
+    var height = 900;
     $("#graphs-area-content").width(width);
 
     var svg = d3.select("#graphs-area-content")
         .append("svg")
         .attr("width", width)
         .attr("height", height);
+    
+    svg.append("circle")
+    	.attr("cx", width/2)
+    	.attr("cy", width/2)
+    	.attr("r", width/2)
+    	.attr("stroke", "#404040")
+    	.attr("stroke-width", "1 px")
+    	.attr("fill", "none")
+    ;
+    svg.append("line")
+    	.attr("x1", 0)
+    	.attr("y1", height/2)
+    	.attr("x2", width)
+    	.attr("y2", height/2)
+    	.attr("stroke", "#404040")
+    	.attr("stroke-width", "1 px")
+    ;
+    svg.append("line")
+	    .attr("x1", width/2)
+	    .attr("y1", 0)
+	    .attr("x2", width/2)
+	    .attr("y2", height)
+	    .attr("stroke", "#404040")
+	    .attr("stroke-width", "1 px")
+    ;
+    
+    //<line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
     
     $.each(graph, function(j, person) {
         var localData = [];

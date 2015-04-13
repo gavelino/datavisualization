@@ -1,9 +1,9 @@
-String.prototype.hashCode = function() {
+function hashCode(vector) {
     var hash = 0, i, chr, len;
-    if (this.length == 0) return hash;
-    for (i = 0, len = this.length; i < len; i++) {
-        chr   = this.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
+    if (vector.length == 0) return hash;
+    for (i = 0, len = vector.length; i < len; i++) {
+        e   = vector[i];
+        hash  = ((hash << 5) - hash) + e;
         hash |= 0; // Convert to 32bit integer
     }
     return hash;
@@ -113,12 +113,18 @@ function vectorDotProduct(vector1, vector2) {
 	return result;
 }
 function computePosition(i, j, person, width, height, radius) {
-	var xpos = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - 2*radius);
+	var normalizedSim = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (height/2 - radius);
+	var vector = personToVector(person);
+	var angle = (hashCode(vector) % 360) * (2 * Math.PI / 360);
+	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle);
+	var ypos = (height/2 - radius) + normalizedSim * Math.sin(angle);
 	
-	var norm = vectorNorm(personToVector(person));
-	var delta = (stats.maxNorm - norm) / (stats.maxNorm - stats.minNorm);
-	var pos = (delta * (height - 2*radius));
-	var ypos = pos;
+//	var xpos = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - 2*radius);
+//	
+//	var norm = vectorNorm(personToVector(person));
+//	var delta = (stats.maxNorm - norm) / (stats.maxNorm - stats.minNorm);
+//	var pos = (delta * (height - 2*radius));
+//	var ypos = pos;
 	
 	return [xpos, ypos];
 }
