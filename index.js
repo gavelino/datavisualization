@@ -189,15 +189,15 @@ var drawMarkers = function(container, margin, mainRadius, cx, cy){
 		var arcLegend = d3.svg.arc()
 			.innerRadius(mainRadius)
 			.outerRadius(mainRadius + margin)
-			.startAngle(Math.PI/2 + i * angleIncrement)
-			.endAngle(Math.PI/2 + (i + 1) * angleIncrement);
+			.startAngle(i * angleIncrement)
+			.endAngle((i + 1) * angleIncrement);
 		container.append("path")
 			.attr("d", arcLegend)
 			.attr("fill", color(categories[i]))
 			.attr("transform", "translate("+cx+","+cy+")");
 		container.append("text")
-	    	.attr("x", cx + (8 + mainRadius) * Math.cos(i * angleIncrement + angleIncrement/2))
-	    	.attr("y", cy + (8 + mainRadius) * Math.sin(i * angleIncrement + angleIncrement/2))
+	    	.attr("x", cx + (8 + mainRadius) * Math.cos(i * angleIncrement + angleIncrement/2 - Math.PI/2))
+	    	.attr("y", cy + (8 + mainRadius) * Math.sin(i * angleIncrement + angleIncrement/2 - Math.PI/2))
 	    	.attr("dy", ".35em")
 	    	.style("text-anchor", "middle")
 	    	.style("font-weight", "bold")

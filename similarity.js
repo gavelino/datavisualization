@@ -136,7 +136,7 @@ function computePosition(i, j, person, width, height, radius) {
 	var catCount = color.domain().length;
 	var angle = (first * (2 * Math.PI / catCount)) + second * ((2 * Math.PI / catCount)/catCount);
 	var normalizedSim = ((1 - stats.sim[i][j])/(1 - stats.minSim)) * (height/2 - radius);
-	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle);
-	var ypos = (height/2 - radius) + normalizedSim * Math.sin(angle);
+	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle - Math.PI/2);
+	var ypos = (height/2 - radius) + normalizedSim * Math.sin(angle - Math.PI/2);
 	return [xpos, ypos];
 }
