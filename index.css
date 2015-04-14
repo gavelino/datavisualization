@@ -2,16 +2,12 @@ html, body {
     width: 5000;
 }
 
-#graphs-list, #graphs-area, #legend-area {
+#graphs-list, #legend-area {
     padding-left: 20px;
     padding-right: 5px;
     padding-top: 5px;
     padding-bottom: 5px;
 }
-
-#legend-area {
-    padding-top: 25px;
-}  
 
 #graphs-list {
     z-index: 1000;

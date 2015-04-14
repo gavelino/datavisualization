@@ -72,11 +72,10 @@ function computeStatistics(appData) {
 }
 
 function personToVector(personData) {
-	var charCodeA = "A".charCodeAt(0);
-	var charCodeZ = "Z".charCodeAt(0);
+	var categories = color.domain();
 	var vector = [];
-	for (var i = charCodeA; i <= charCodeZ; i++) {
-		var locations = personData[String.fromCharCode(i)] || [];
+	for (var i = 0; i < categories.length; i++) {
+		var locations = personData[categories[i]] || [];
 		vector.push(locations.length);
 	}
 	return vector;
@@ -134,7 +133,7 @@ function computePosition(i, j, person, width, height, radius) {
 	var top2 = stats.top2[i][j];
 	var first = top2[0];
 	var second = top2[1];
-	var catCount = "Z".charCodeAt(0) - "A".charCodeAt(0) + 1;
+	var catCount = color.domain().length;
 	var angle = (first * (2 * Math.PI / catCount)) + second * ((2 * Math.PI / catCount)/catCount);
 	var normalizedSim = ((1 - stats.sim[i][j])/(1 - stats.minSim)) * (height/2 - radius);
 	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle);

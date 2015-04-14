@@ -25,7 +25,7 @@ function refreshGraph(i) {
     // Chama a função que realmente desenha o grafo e a legenda
     svg = drawGraph(appData.graphs[i], i);
     zoomListener(svg);
-    drawLegend(color);
+    //drawLegend(color);
     drawOnDemand();
     
     // Ativa (deixa azul) o grafo selecionado na lista lateral
@@ -84,9 +84,11 @@ var pie = d3.layout.pie()
 var drawGraph = function(graph, i){
     $("#graphs-area-content").empty();
     
-    var width = 900;
-    var height = 900;
-    $("#graphs-area-content").width(width);
+    var height = $(window).height() - 10;
+    var width = height;
+    $("#graphs-area-content")
+    	.width(width)
+    	.height(height);
 
     var svg = d3.select("#graphs-area-content")
         .append("svg")
@@ -95,33 +97,16 @@ var drawGraph = function(graph, i){
     
     var container = svg.append("g");
     
-    container.append("g").append("circle")
-    	.attr("cx", width/2)
-    	.attr("cy", width/2)
-    	.attr("r", width/2)
-    	.attr("stroke", "#404040")
-    	.attr("stroke-width", "1 px")
-    	.attr("fill", "none")
-    ;
-    container.append("g").append("line")
-    	.attr("x1", 0)
-    	.attr("y1", height/2)
-    	.attr("x2", width)
-    	.attr("y2", height/2)
-    	.attr("stroke", "#404040")
-    	.attr("stroke-width", "1 px")
-    ;
-    container.append("g").append("line")
-	    .attr("x1", width/2)
-	    .attr("y1", 0)
-	    .attr("x2", width/2)
-	    .attr("y2", height)
-	    .attr("stroke", "#404040")
-	    .attr("stroke-width", "1 px")
-    ;
+    // Desenha o background:
     
-    //<line x1="0" y1="0" x2="200" y2="200" style="stroke:rgb(255,0,0);stroke-width:2" />
+    var margin = 16;
+    var mainRadius = (height - 2*margin)/2;
+    var cx = mainRadius + margin;
+    var cy = mainRadius + margin;
     
+    drawMarkers(container, margin, mainRadius, cx, cy);
+    
+    // Desenha os nodos
     $.each(graph, function(j, person) {
         var localData = [];
         $.each(person, function(k, category) {
@@ -156,7 +141,7 @@ var drawGraph = function(graph, i){
 
         
         /*Informações*/
-        var path = svg.selectAll('path');
+        var path = svg.selectAll('path.arc');
         var tooltip = d3.select('#graphs-area-content')                               
             .append('div')                                                
             .attr('class', 'tooltip2');                                    
@@ -197,32 +182,46 @@ function drawOnDemand(){
 };
 
 
-
-// Função que desenha a legenda na area reservada do html
-var drawLegend = function(color){
-    $("#legend-area-content").empty();
-    
-    var legend = d3.select("#legend-area-content")
-        .append("svg")
-        .attr("class", "legend")
-        .attr("width", radius * 2)
-        .attr("height", radius * 8)
-        .selectAll("g")
-        .data(color.domain().slice())
-        .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-    legend.append("rect")
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    legend.append("text")
-        .attr("x", 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .text(function(d) { return d; });
-};
+var drawMarkers = function(container, margin, mainRadius, cx, cy){
+	var categories = color.domain();
+	var angleIncrement = 2 * Math.PI/categories.length;
+	for (var i = 0; i < categories.length; i++) {
+		var arcLegend = d3.svg.arc()
+			.innerRadius(mainRadius)
+			.outerRadius(mainRadius + margin)
+			.startAngle(Math.PI/2 + i * angleIncrement)
+			.endAngle(Math.PI/2 + (i + 1) * angleIncrement);
+		container.append("path")
+			.attr("d", arcLegend)
+			.attr("fill", color(categories[i]))
+			.attr("transform", "translate("+cx+","+cy+")");
+		container.append("text")
+	    	.attr("x", cx + (8 + mainRadius) * Math.cos(i * angleIncrement + angleIncrement/2))
+	    	.attr("y", cy + (8 + mainRadius) * Math.sin(i * angleIncrement + angleIncrement/2))
+	    	.attr("dy", ".35em")
+	    	.style("text-anchor", "middle")
+	    	.style("font-weight", "bold")
+	    	.attr("fill", "#ffffff")
+	    	.text(categories[i])
+	    ;
+	}
+	container.append("line")
+    	.attr("x1", margin)
+    	.attr("y1", margin + mainRadius)
+    	.attr("x2", margin + 2*mainRadius)
+    	.attr("y2", margin + mainRadius)
+    	.attr("stroke", "#808080")
+    	.attr("stroke-width", "1 px")
+    ;
+	container.append("line")
+		.attr("x1", margin + mainRadius)
+    	.attr("y1", margin)
+    	.attr("x2", margin + mainRadius)
+    	.attr("y2", margin + 2*mainRadius)
+		.attr("stroke", "#808080")
+		.attr("stroke-width", "1 px")
+	;
+}
 
 
 
