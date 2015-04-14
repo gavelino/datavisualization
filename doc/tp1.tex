@@ -1,0 +1,70 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+%\usepackage{booktabs}
+\usepackage{amsmath}
+
+
+\title{Visualização de Dados -- Trabalho Prático 1}
+
+\author{Danilo Ferreira, Guilherme Avelino, Hudson Borges, Mauri Miguel}
+
+
+\address{Departamento de Ciência da Computação, UFMG
+%\email{\footnotesize \{danilofs,mtov\}@dcc.ufmg.br}
+}
+
+
+\begin{document}
+
+\maketitle
+
+%\section{Introdução}
+
+
+
+
+\section{Abordagem Proposta}
+
+TODO
+
+
+
+\subsection{Cálculo da Similaridade}
+
+Para calcular um índice de similaridade entre as pessoas, adotamos o modelo de espaço vetorial, a métrica TF-IDF ({\em Term Frequency - Inverse Document Frequency}) e a similaridade do cosseno, que são técnicas tradicionalmente utilizados em sistemas de recuperação de informação~\cite{manning2008}. Cada pessoa é representada como um vetor no espaço $n$-vetorial, onde cada dimensão representa uma categoria de local visitado. Seja $p \in P$ uma pessoa do conjunto $P$ de todas as pessoas e $c$ uma categoria de local. Cada componente do vetor é o produto entre os fatores $\text{tf}(c, p) \times \text{idf}(c, P)$, onde:
+\begin{itemize}
+\item $\text{tf}(c, p)$ é a frequência de visitas de $p$ a locais da categoria $c$.
+\item $\text{idf}(c, P)$ é uma medida de quanta informação uma categoria $c$ fornece. Isto é, quanto mais comum é uma pessoa visitar uma categoria, menos representativa ela é para distinguir essa pessoa das demais. O componente $\text{idf}(c, P)$ é computado como:
+\begin{align*}
+\text{idf}(c, P) = \log \frac{|P|}{1 + |\{p \in P : \text{$p$ visita $c$}  \}|}
+\end{align*}
+\end{itemize}
+
+Por fim, dados dois vetores $v$ e $u$ de componentes TF-IDF, a similaridade entre eles é calculada usando a similaridade do cosseno, que é definida como:
+\begin{align*}
+\text{sim}(v, u) = \frac{v \bullet u}{||v|| \times ||u||} = \frac{\sum_{i=1}^{n} v_i \times u_i}{\sqrt{\sum_{i=1}^{n} (v_i)^2} \times \sqrt{\sum_{i=1}^{n} (u_i)^2}}
+\end{align*}
+
+
+
+
+\section{Análise dos Dados e Descobertas}
+
+TODO
+
+
+
+\section{Conclusão}
+
+TODO
+
+
+\footnotesize
+\bibliographystyle{abbrv}
+\bibliography{tp1}
+
+\end{document}
