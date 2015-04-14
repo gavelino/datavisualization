@@ -90,7 +90,8 @@ function tfIdf(vector, idf) {
 	var tfidf = [];
 	for (var i = 0; i < vector.length; i++) {
 		if (vector[i] > 0) {
-			tfidf.push((1 + Math.log(vector[i])) * idf[i]);
+			//tfidf.push((1 + Math.log(vector[i])) * idf[i]);
+			tfidf.push(vector[i] * idf[i]);
 		} else {
 			tfidf.push(0);
 		}
@@ -130,23 +131,13 @@ function vectorDotProduct(vector1, vector2) {
 	return result;
 }
 function computePosition(i, j, person, width, height, radius) {
-	var normalizedSim = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (height/2 - radius);
-	//var vector = personToVector(person);
 	var top2 = stats.top2[i][j];
 	var first = top2[0];
 	var second = top2[1];
 	var catCount = "Z".charCodeAt(0) - "A".charCodeAt(0) + 1;
 	var angle = (first * (2 * Math.PI / catCount)) + second * ((2 * Math.PI / catCount)/catCount);
-	//var angle = (hashCode(vector) % 360) * (2 * Math.PI / 360);
+	var normalizedSim = ((1 - stats.sim[i][j])/(1 - stats.minSim)) * (height/2 - radius);
 	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle);
 	var ypos = (height/2 - radius) + normalizedSim * Math.sin(angle);
-	
-//	var xpos = ((stats.maxSim - stats.sim[i][j])/(stats.maxSim - stats.minSim)) * (width - 2*radius);
-//	
-//	var norm = vectorNorm(personToVector(person));
-//	var delta = (stats.maxNorm - norm) / (stats.maxNorm - stats.minNorm);
-//	var pos = (delta * (height - 2*radius));
-//	var ypos = pos;
-	
 	return [xpos, ypos];
 }
