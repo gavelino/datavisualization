@@ -23,7 +23,8 @@ function refreshGraph(i) {
     $("#loading").show();
     
     // Chama a função que realmente desenha o grafo e a legenda
-    drawGraph(appData.graphs[i], i);
+    svg = drawGraph(appData.graphs[i], i);
+    zoomListener(svg);
     drawLegend(color);
     drawOnDemand();
     
@@ -45,6 +46,19 @@ function configureColors() {
     }
     
     color.domain(labels);
+}
+
+// create the zoom listener
+var zoomListener = d3.behavior.zoom()
+  .scaleExtent([0.2, 5])
+  .on("zoom", zoomHandler);
+
+// function for handling zoom event
+function zoomHandler() {
+    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+    /*$.each(pies, function(k, pie) {
+        pie.attr("transform",  "scale(-" + d3.event.scale + ")");
+    });*/
 }
 
 
@@ -79,7 +93,9 @@ var drawGraph = function(graph, i){
         .attr("width", width)
         .attr("height", height);
     
-    svg.append("circle")
+    var container = svg.append("g");
+    
+    container.append("g").append("circle")
     	.attr("cx", width/2)
     	.attr("cy", width/2)
     	.attr("r", width/2)
@@ -87,7 +103,7 @@ var drawGraph = function(graph, i){
     	.attr("stroke-width", "1 px")
     	.attr("fill", "none")
     ;
-    svg.append("line")
+    container.append("g").append("line")
     	.attr("x1", 0)
     	.attr("y1", height/2)
     	.attr("x2", width)
@@ -95,7 +111,7 @@ var drawGraph = function(graph, i){
     	.attr("stroke", "#404040")
     	.attr("stroke-width", "1 px")
     ;
-    svg.append("line")
+    container.append("g").append("line")
 	    .attr("x1", width/2)
 	    .attr("y1", 0)
 	    .attr("x2", width/2)
@@ -114,7 +130,7 @@ var drawGraph = function(graph, i){
         
         var xy = computePosition(i, j, person, width, height, radius);
         
-        var pPie = svg.append("g")
+        var pPie = container.append("g").append("g")
             //.attr("transform", "translate(" + (j-1)*radius*2 + "," + yPosition + ")")
             .attr("transform", "translate(" + xy[0] + "," + xy[1] + ")")
             .selectAll(".arc")
@@ -138,7 +154,7 @@ var drawGraph = function(graph, i){
             .style("text-anchor", "middle")
             .text("G"+i+"E"+j);
 
-
+        
         /*Informações*/
         var path = svg.selectAll('path');
         var tooltip = d3.select('#graphs-area-content')                               
@@ -171,6 +187,7 @@ var drawGraph = function(graph, i){
             tooltip.style('display', 'none');                           
         });                                                           
     });
+    return svg;
 };
 
 /*Exibe os dados on-demand*/
