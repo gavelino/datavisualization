@@ -24,7 +24,7 @@ function refreshGraph(i) {
     
     // Chama a função que realmente desenha o grafo e a legenda
     svg = drawGraph(appData.graphs[i], i);
-    zoomListener(svg);
+    //zoomListener(svg);
     //drawLegend(color);
     drawOnDemand();
     
@@ -103,7 +103,7 @@ var pie = d3.layout.pie()
 var drawGraph = function(graph, i){
     $("#graphs-area-content").empty();
     
-    var height = $(window).height() - 10;
+    var height = $(window).height() - 45;
     var width = height;
     $("#graphs-area-content")
     	.width(width)
@@ -125,7 +125,8 @@ var drawGraph = function(graph, i){
     
     drawMarkers(i, container, margin, mainRadius, cx, cy);
     
-    drawEdges(graph, i, container,  mainRadius, radius, cx, cy);
+    if ($('input[type=checkbox]').is(':checked'))
+        drawEdges(graph, i, container,  mainRadius, radius, cx, cy);
     
     
     // Desenha os nodos
@@ -283,6 +284,7 @@ $.getJSON("data.json", function(data){
     computeSimilarity(data, stats, stats.centroid);
     
     refreshGraph(0);
+    $( "input[type=checkbox]" ).on( "click", function(){console.log("click"); refreshGraph($(".graph_menu.active").attr("graphId"));} );
 });
 
 

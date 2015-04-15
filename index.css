@@ -58,3 +58,7 @@ html, body {
 .nodelabel, .centroid{
 	cursor: pointer;
 }
+
+#turnOnOfEdges {
+    padding-top: 5px;
+}
