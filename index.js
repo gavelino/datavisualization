@@ -47,7 +47,6 @@ function refreshGraphWithFocus(i, vector) {
 function configureColors() {
     var labels = [];
     $.each( getGraphSet(), function(id, value) {
-        console.log(id);    
         labels.push(id);
     });
     labels.sort();
@@ -124,7 +123,7 @@ var drawGraph = function(graph, i){
     var cx = mainRadius + margin;
     var cy = mainRadius + margin;
     
-    drawMarkers(container, margin, mainRadius, cx, cy);
+    drawMarkers(i, container, margin, mainRadius, cx, cy);
     
     // Desenha os nodos
     $.each(graph, function(j, person) {
@@ -133,7 +132,7 @@ var drawGraph = function(graph, i){
             localData.push({category : k, count : category.length});
         });
         
-        var xy = computePosition(i, j, person, width, height, radius);
+        var xy = computeNodePosition(i, j, mainRadius, radius, cx, cy);
         
         var pPie = container.append("g").append("g")
             //.attr("transform", "translate(" + (j-1)*radius*2 + "," + yPosition + ")")
@@ -151,14 +150,18 @@ var drawGraph = function(graph, i){
             })
             //.append("title").text(function(d){return d.value;});
 
-        pPie.append("text")
+        var label = pPie.append("text")
             .attr("dy", ".35em")
-            //.attr("transform", "translate(" + radius + "," + radius + ")")
+            .attr("class", "nodelabel")
             .attr("x", radius)
             .attr("y", radius)
             .style("text-anchor", "middle")
             .text("G"+i+"E"+j);
 
+        label.on('click', function() {                            
+            refreshGraphWithFocus(i, personToVector(person));
+        });
+        label.append("title").text("centralizar neste elemento");
         
         /*Informações*/
         var path = svg.selectAll('path.arc');
@@ -192,6 +195,9 @@ var drawGraph = function(graph, i){
             tooltip.style('display', 'none');                           
         });                                                           
     });
+    
+    drawCentroidMarker(i, container, margin, mainRadius, cx, cy);
+    
     return svg;
 };
 
@@ -202,7 +208,7 @@ function drawOnDemand(){
 };
 
 
-var drawMarkers = function(container, margin, mainRadius, cx, cy){
+var drawMarkers = function(graph, container, margin, mainRadius, cx, cy){
 	var categories = color.domain();
 	var angleIncrement = 2 * Math.PI/categories.length;
 	for (var i = 0; i < categories.length; i++) {
@@ -241,8 +247,27 @@ var drawMarkers = function(container, margin, mainRadius, cx, cy){
 		.attr("stroke", "#808080")
 		.attr("stroke-width", "1 px")
 	;
+	
 }
 
+function drawCentroidMarker(graph, container, margin, mainRadius, cx, cy) {
+	//if (stats.centroid !== stats.baseline) {
+		var centroidRadius = 4;
+		var xy = computeCentroidPosition(mainRadius, cx, cy);
+		var centroidMark = container.append("circle")
+			.attr("class", "centroid")
+			.attr("cx", xy[0])
+			.attr("cy", xy[1])
+			.attr("r", centroidRadius)
+			.attr("fill", "#ffffff")
+			.attr("stroke", "#000000")
+		;
+		centroidMark.on('click', function() {
+			refreshGraphWithFocus(graph, stats.centroid);
+		});
+		centroidMark.append("title").text("centralizar no centróide");
+	//}
+}
 
 
 // Executado no carregamento da pagina, para preencher com o grafo 0

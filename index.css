@@ -54,3 +54,7 @@ html, body {
     font-size: 100%;
     color: black;
 }
+
+.nodelabel, .centroid{
+	cursor: pointer;
+}

@@ -51,27 +51,11 @@ function computeStatistics(appData) {
 		}
 	}
 	
-	// Calcula a similaridade
-//	var minSim = 1;
-//	for (var graph in appData.graphs) {
-//		sim[graph] = {};
-//		for (var p in appData.graphs[graph]) {
-//			var person = appData.graphs[graph][p];
-//			var vector = personToVector(person);
-//			var v1 = tfIdf(vector, idf);
-//			var v2 = tfIdf(centroid, idf);
-//			sim[graph][p] = cosineSimilarity(v1, v2);
-//			minSim = Math.min(minSim, sim[graph][p]);
-//		}
-//	}
 	return {
 		n: n,
 		centroid: centroid,
+		centroidTop2: findTop2(centroid),
 		idf: idf,
-		//maxNorm: maxNorm,
-		//minNorm: minNorm,
-		//minSim: minSim,
-		//sim: sim,
 		top2: top2
 	};
 }
@@ -80,19 +64,22 @@ function computeSimilarity(appData, stats, baseline) {
 	// Calcula a similaridade
 	var sim = {};
 	var minSim = 1;
+	var v2 = tfIdf(baseline, stats.idf);
+	var centroidTfIdf = tfIdf(stats.centroid, stats.idf);
 	for (var graph in appData.graphs) {
 		sim[graph] = {};
 		for (var p in appData.graphs[graph]) {
 			var person = appData.graphs[graph][p];
 			var vector = personToVector(person);
 			var v1 = tfIdf(vector, stats.idf);
-			var v2 = tfIdf(baseline, stats.idf);
 			sim[graph][p] = cosineSimilarity(v1, v2);
 			minSim = Math.min(minSim, sim[graph][p]);
 		}
 	}
 	stats.sim = sim;
 	stats.minSim = minSim;
+	stats.baseline = baseline;
+	stats.centroidSim = cosineSimilarity(centroidTfIdf, v2);
 }
 
 function personToVector(personData) {
@@ -153,14 +140,19 @@ function vectorDotProduct(vector1, vector2) {
 	}
 	return result;
 }
-function computePosition(i, j, person, width, height, radius) {
-	var top2 = stats.top2[i][j];
+function computeNodePosition(i, j, mainRadius, nodeRadius, cx, cy) {
+	return computePosition(stats.top2[i][j], stats.sim[i][j], mainRadius, nodeRadius, cx, cy);
+}
+function computeCentroidPosition(mainRadius, cx, cy) {
+	return computePosition(stats.centroidTop2, stats.centroidSim, mainRadius, 0, cx, cy);
+}
+function computePosition(top2, sim, mainRadius, nodeRadius, cx, cy) {
 	var first = top2[0];
 	var second = top2[1];
 	var catCount = color.domain().length;
 	var angle = (first * (2 * Math.PI / catCount)) + second * ((2 * Math.PI / catCount)/catCount);
-	var normalizedSim = ((1 - stats.sim[i][j])/(1 - stats.minSim)) * (height/2 - radius);
-	var xpos = (width/2 - radius) + normalizedSim * Math.cos(angle - Math.PI/2);
-	var ypos = (height/2 - radius) + normalizedSim * Math.sin(angle - Math.PI/2);
+	var normalizedSim = ((1 - sim)/(1 - stats.minSim)) * (mainRadius - radius);
+	var xpos = (cx - nodeRadius) + normalizedSim * Math.cos(angle - Math.PI/2);
+	var ypos = (cy - nodeRadius) + normalizedSim * Math.sin(angle - Math.PI/2);
 	return [xpos, ypos];
 }
