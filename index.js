@@ -38,6 +38,11 @@ function refreshGraph(i) {
     $("#legend-area").show();
 };
 
+function refreshGraphWithFocus(i, vector) {
+	computeSimilarity(appData, stats, vector);
+	refreshGraph(i);
+}
+
 // Função auxiliar que define as cores para as categorias
 function configureColors() {
     var labels = [];
@@ -232,6 +237,7 @@ $.getJSON("data.json", function(data){
     configureColors();
     
     stats = computeStatistics(data);
+    computeSimilarity(data, stats, stats.centroid);
     
     refreshGraph(0);
 });

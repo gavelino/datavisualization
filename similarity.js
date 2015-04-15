@@ -14,12 +14,13 @@ function hashCode(vector) {
 function computeStatistics(appData) {
 	var n = 0;
 	var centroid = personToVector({});
-	var maxNorm = 0;
-	var minNorm = 1000;
+	//var maxNorm = 0;
+	//var minNorm = 1000;
 	var idf = personToVector({});
-	var sim = {};
+	//var sim = {};
 	var top2 = {};
 	
+	// Calcula o IDF e centróide
 	for (var graph in appData.graphs) {
 		for (var p in appData.graphs[graph]) {
 			var vector = personToVector(appData.graphs[graph][p]);
@@ -30,8 +31,8 @@ function computeStatistics(appData) {
 				}
 			}
 			var norm = vectorNorm(vector);
-			maxNorm = Math.max(maxNorm, norm);
-			minNorm = Math.min(minNorm, norm);
+			//maxNorm = Math.max(maxNorm, norm);
+			//minNorm = Math.min(minNorm, norm);
 			n++;
 		}
 	}
@@ -39,36 +40,59 @@ function computeStatistics(appData) {
 		centroid[i] = centroid[i] / n;
 		idf[i] = Math.log(n/(1 + idf[i]));
 	}
-	var minSim = 1;
-	var maxSim = 0;
+	
+	// Calcula os dois componentes mais importantes do vetor.
 	for (var graph in appData.graphs) {
-		sim[graph] = {};
 		top2[graph] = {};
 		for (var p in appData.graphs[graph]) {
 			var person = appData.graphs[graph][p];
 			var vector = personToVector(person);
-			var v1 = tfIdf(vector, idf);
-			var v2 = tfIdf(centroid, idf);
-//			var v1 = vector;
-//			var v2 = centroid;
-			sim[graph][p] = cosineSimilarity(v1, v2);
-			minSim = Math.min(minSim, sim[graph][p]);
-			maxSim = Math.max(maxSim, sim[graph][p]);
-			
 			top2[graph][p] = findTop2(vector);
 		}
 	}
+	
+	// Calcula a similaridade
+//	var minSim = 1;
+//	for (var graph in appData.graphs) {
+//		sim[graph] = {};
+//		for (var p in appData.graphs[graph]) {
+//			var person = appData.graphs[graph][p];
+//			var vector = personToVector(person);
+//			var v1 = tfIdf(vector, idf);
+//			var v2 = tfIdf(centroid, idf);
+//			sim[graph][p] = cosineSimilarity(v1, v2);
+//			minSim = Math.min(minSim, sim[graph][p]);
+//		}
+//	}
 	return {
 		n: n,
 		centroid: centroid,
 		idf: idf,
-		maxNorm: maxNorm,
-		minNorm: minNorm,
-		minSim: minSim,
-		maxSim: maxSim,
-		sim: sim,
+		//maxNorm: maxNorm,
+		//minNorm: minNorm,
+		//minSim: minSim,
+		//sim: sim,
 		top2: top2
 	};
+}
+
+function computeSimilarity(appData, stats, baseline) {
+	// Calcula a similaridade
+	var sim = {};
+	var minSim = 1;
+	for (var graph in appData.graphs) {
+		sim[graph] = {};
+		for (var p in appData.graphs[graph]) {
+			var person = appData.graphs[graph][p];
+			var vector = personToVector(person);
+			var v1 = tfIdf(vector, stats.idf);
+			var v2 = tfIdf(baseline, stats.idf);
+			sim[graph][p] = cosineSimilarity(v1, v2);
+			minSim = Math.min(minSim, sim[graph][p]);
+		}
+	}
+	stats.sim = sim;
+	stats.minSim = minSim;
 }
 
 function personToVector(personData) {
