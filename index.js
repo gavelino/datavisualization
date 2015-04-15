@@ -125,6 +125,9 @@ var drawGraph = function(graph, i){
     
     drawMarkers(i, container, margin, mainRadius, cx, cy);
     
+    drawEdges(graph, i, container,  mainRadius, radius, cx, cy);
+    
+    
     // Desenha os nodos
     $.each(graph, function(j, person) {
         var localData = [];
@@ -282,3 +285,71 @@ $.getJSON("data.json", function(data){
     refreshGraph(0);
 });
 
+
+// Desenha as arestas entre os nodes
+var drawEdges = function(graph,i, container,  mainRadius, radius, cx, cy){
+    var getXY = function(i, j) {
+        return computeNodePosition(i,j, mainRadius, radius, cx, cy);
+    };
+    var lineFunction =  function(x1,y1,x2,y2,peso) {
+        container.append("line")
+    	.attr("x1", x1+radius)
+    	.attr("y1", y1+radius)
+    	.attr("x2", x2+radius)
+    	.attr("y2", y2+radius)
+    	.attr("stroke", "gray")
+    	.attr("stroke-width", peso/2);
+    };
+    getAllConnections(graph).forEach(function(node){
+        var xy1 = getXY(i, node.p1);
+        var xy2 = getXY(i, node.p2);
+        
+        lineFunction(xy1[0], xy1[1], xy2[0], xy2[1], node.value);
+    });
+};
+
+// Funcao auxiliar construcao das arestas entre nodes
+var getCategoriesSet = function(graph){ 
+    var mapNodeId = new Object();
+    $.each(graph, function(node, categories){ 
+        var setId =  new Object();
+        $.each(categories, function(categories, values) {
+            values.forEach(function(value){
+                if (value in setId)
+                    setId[value]++;
+                else
+                    setId[value] = 1;
+            });
+        });
+        mapNodeId[node] = setId; 
+    }); 
+    return mapNodeId;
+};
+
+// Funcao auxiliar construcao das arestas entre nodes
+var getNConnections = function(nodeSet1, nodeSet2){
+    var count =  0;
+    $.each(nodeSet1, function(id, n){
+        if (id in nodeSet2)
+            count++;
+    });
+    return count;
+};
+
+// Funcao auxiliar construcao das arestas entre nodes
+var getAllConnections = function(graph){
+    var mapNodeId = getCategoriesSet(graph);
+    var connections = [];
+    var nodeKeys = Object.keys(mapNodeId); 
+    for (i = 0; i < nodeKeys.length-1; i++) {
+        for (j = i+1; j < nodeKeys.length; j++) {
+            var connection = {
+                p1 : nodeKeys[i],
+                p2 : nodeKeys[j],
+                value : getNConnections(mapNodeId[nodeKeys[i]],mapNodeId[nodeKeys[j]])
+            };
+            connections.push(connection);
+        } 
+    }   
+    return connections;
+};
