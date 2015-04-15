@@ -29,7 +29,14 @@
 
 \section{Abordagem Proposta}
 
-TODO
+Como forma de auxiliar a compreensão dos dados e identificação de padrões mapeamos os grafos como segue:
+\begin{itemize} 
+	\item Cada grafo é apresentado separadamente em um gráfico, sendo a seleção do grafo a ser vizualizada disponibilizada através de uma aba lateral.
+	\item Cada nó é representada por um círculo multicolorido (\textit{donuts}). 
+	\item A quantidade de elementos de uma dada categoria é representada pelas fatias do  (\textit{donuts}).
+	\item A posição do (\textit{donuts}) no espaço é definida baseada no cálculo de similaridade descrito na Seção \ref{similaridade} e na categoria que o nó possui mais elementos.
+	\item A legenda do gráfico, com os nomes das categorias é apresentada como um grande círculo que envolve os nós, auxiliando na identificação da categoria que o nó possui mais elementos.
+\end{itemize}
 
 
 \begin{figure}[h!]
@@ -39,7 +46,7 @@ TODO
 \end{figure}
 
 
-\subsection{Cálculo da Similaridade}
+\subsection{Cálculo da Similaridade}\label{similaridade}
 
 Para calcular um índice de similaridade entre as pessoas, adotamos o modelo de espaço vetorial, a métrica TF-IDF ({\em Term Frequency - Inverse Document Frequency}) e a similaridade do cosseno, que são técnicas tradicionalmente utilizados em sistemas de recuperação de informação~\cite{manning2008}. Cada pessoa é representada como um vetor no espaço $n$-vetorial, onde cada dimensão representa uma categoria de local visitado. Seja $p \in P$ uma pessoa do conjunto $P$ de todas as pessoas e $c$ uma categoria de local. Cada componente do vetor é o produto entre os fatores $\text{tf}(c, p) \times \text{idf}(c, P)$, onde:
 \begin{itemize}
