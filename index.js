@@ -46,12 +46,27 @@ function refreshGraphWithFocus(i, vector) {
 // Função auxiliar que define as cores para as categorias
 function configureColors() {
     var labels = [];
-    for(var c = 'A'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++ ) {
-        labels.push(String.fromCharCode(c));
-    }
-    
+    $.each( getGraphSet(), function(id, value) {
+        console.log(id);    
+        labels.push(id);
+    });
+    labels.sort();
     color.domain(labels);
 }
+
+
+var getGraphSet = function(){ 
+    var setCategories =  new Object();
+    $.each(appData.graphs, function(id, graph){
+        $.each(graph, function(node, categories){ 
+            $.each(categories, function(categories, values) {
+                setCategories[categories] = 1;
+            });
+
+        }); 
+    });
+    return setCategories;
+};
 
 // create the zoom listener
 var zoomListener = d3.behavior.zoom()
