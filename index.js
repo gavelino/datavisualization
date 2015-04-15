@@ -98,7 +98,7 @@ var arc = d3.svg.arc()
 var pie = d3.layout.pie()
     .sort(null)
     .value(function(d) { return d.count; });
-
+var mainRadius;
 // Função que desenha um dado grafo na area reservada do html
 var drawGraph = function(graph, i){
     $("#graphs-area-content").empty();
@@ -119,7 +119,7 @@ var drawGraph = function(graph, i){
     // Desenha o background:
     
     var margin = 16;
-    var mainRadius = (height - 2*margin)/2;
+    mainRadius = (height - 2*margin)/2;
     var cx = mainRadius + margin;
     var cy = mainRadius + margin;
     
@@ -293,21 +293,22 @@ var drawEdges = function(graph,i, container,  mainRadius, radius, cx, cy){
     var getXY = function(i, j) {
         return computeNodePosition(i,j, mainRadius, radius, cx, cy);
     };
-    var lineFunction =  function(x1,y1,x2,y2,peso) {
-        container.append("line")
+    var lineFunction =  function(x1,y1,x2,y2,node) {
+        container.append("line").data([{node:node}])
     	.attr("x1", x1+radius)
     	.attr("y1", y1+radius)
     	.attr("x2", x2+radius)
     	.attr("y2", y2+radius)
     	.attr("stroke", "gray")
-    	.attr("stroke-width", peso/2);
+    	.attr("stroke-width", node.value/2);
     };
     getAllConnections(graph).forEach(function(node){
         var xy1 = getXY(i, node.p1);
         var xy2 = getXY(i, node.p2);
         
-        lineFunction(xy1[0], xy1[1], xy2[0], xy2[1], node.value);
+        lineFunction(xy1[0], xy1[1], xy2[0], xy2[1], node);
     });
+    addTooltip(container);
 };
 
 // Funcao auxiliar construcao das arestas entre nodes
@@ -354,4 +355,28 @@ var getAllConnections = function(graph){
         } 
     }   
     return connections;
+};
+
+
+var addTooltip = function(container){
+    
+    var div = d3.select('#graphs-area-content').append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+    
+    
+    container.selectAll("line")       
+        .on("mouseover", function(d) {      
+            div.transition()        
+                //.duration(200)      
+                .style("opacity", .9);      
+            div .html( d.node.value)     
+                .style("left", (d3.event.pageX-(mainRadius-80)) + "px")     
+                .style("top", (d3.event.pageY -30 ) + "px");    
+            })                  
+        .on("mouseout", function(d) {       
+            div.transition()        
+                //.duration(500)      
+                .style("opacity", 0);   
+        });
 };
