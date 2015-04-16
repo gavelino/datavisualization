@@ -32,12 +32,13 @@ Neste trabalho desenvolvemos uma visualização que representa uma série de com
 
 \section{Abordagem Proposta}
 
-Como forma de auxiliar a compreensão dos dados e identificação de padrões mapeamos os grafos como segue:
+O trabalho tem por objetivo a análise visual de um conjunto de grafos bipartidos e identificar semelhanças entre eles. Nessa abordagem trabalhamos a visualização dos dados de forma que facilite a identificação de nós semelhantes no grafo, distinguindo os nós que possuem um nó semelhante em todos os grafos dos que não possuem. Mais especificamente, a visualização possui as seguintes características:
 \begin{itemize} 
 	\item Cada grafo é apresentado separadamente em um gráfico, sendo a seleção do grafo a ser visualizada disponibilizada através de uma aba lateral.
 	\item Cada nó é representada por um círculo multicolorido (\textit{donuts}). 
 	\item A quantidade de elementos de uma dada categoria é representada pelas fatias do  (\textit{donuts}).
 	\item A posição do (\textit{donuts}) no espaço é definida de tal forma que nós semelhantes são posicionados em locais semelhantes. O algoritmo de posicionamento é descrito em detalhes na Seção~\ref{posicionamento}.
+	\item São exibidas, opcionalmente, arestas que ligam as pessoas que visitaram exatamente o mesmo local. Quanto mais locais em comum duas pessoas visitam, mais forte que as conecta.
 	
 %	baseada no cálculo de similaridade descrito na Seção~\ref{similaridade} e na categoria que o nó possui mais elementos.
 %	\item A legenda do gráfico, com os nomes das categorias é apresentada como um grande círculo que envolve os nós, auxiliando na identificação da categoria que o nó possui mais elementos.
