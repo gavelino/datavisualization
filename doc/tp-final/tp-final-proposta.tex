@@ -26,31 +26,30 @@
 %\section{Introdução}
 \begin{abstract}
 Nesse trabalho desenvolveremos um conjunto de visualizações com o intuito de auxiliar na identificação de especialistas de código em sistemas de software. A indentificação do autor/especialista em artefato de código é uma atividade importante   para auxilio na manutenção e evolução de software.\\
-\centerline{\url{http://dcc.ufmg.br/~danilofs/dvis/tp1}}
+%\centerline{\url{http://dcc.ufmg.br/~danilofs/dvis/tp1}}
 \end{abstract}
 
 
 \section{Introdução}
-Sistemas de recomendação representam uma tecnologia capaz de auxiliar a atividade natural de identificar especialistas em uma organização. Um sistema de recomendação capaz de fornecer sugestões de pessoas que detenham algum conhecimento sobre um dado artefato de software (arquivo, módulo, etc) é uma ferramenta importante para auxilio na atividade de manutenção e evolução de software \cite{McDonald2000}. Além disso, sistemas de recomendação de especialistas podem reduzir a sobrecarga sobre as pessoas responsável por identificar tais especialistas e pode prover facilmente alternativas para quando os especialistas conhecidos não estão disponíveis.
+%Sistemas de recomendação representam uma tecnologia capaz de auxiliar a atividade natural de identificar especialistas em uma organização. Um sistema de recomendação capaz de fornecer sugestões de pessoas que detenham algum conhecimento sobre um dado artefato de software (arquivo, módulo, etc) é uma ferramenta importante para auxilio na atividade de manutenção e evolução de software \cite{McDonald2000}. Além disso, sistemas de recomendação de especialistas podem reduzir a sobrecarga sobre as pessoas responsável por identificar tais especialistas e pode prover facilmente alternativas para quando os especialistas conhecidos não estão disponíveis.
 
 Nos últimos anos o GitHub se tornou uma poderosa ferramenta de colaboração para desenvolvimento de software. Atualmente é o maior repositório de código do mundo, com mais de 6.8 milhões de colaboradores e 15.2 milhões de repositórios armazenados. Muito de sua popularidade de se deve a características como controle de versão distribuído e foco em \textit{social coding} \cite{Dabbish2012}. 
 
 No trabalho aqui proposto, buscamos desenvolver visualizações que auxiliem na identificação de especialistas em artefatos de software. As visualizações aqui propostas serão construídas com objetivo de analisar um conjunto de dados extraídas de sistemas Open Source extraídos do GitHub\footnote{https://github.com/}.
 
 
-\section{Abordagem Proposta}
-Em nosso trabalho, buscaremos, através de informações extraídos de projetos de Software Livre armazenados no GitHub, fornecer visualizações que axiliem a identificar especialistas de código em projetos de desenvolvimento de software. 
+%\section{Abordagem Proposta}
+%Em nosso trabalho, buscaremos, através de informações extraídos de projetos de Software Livre armazenados no GitHub, fornecer visualizações que axiliem a identificar especialistas de código em projetos de desenvolvimento de software. 
+%
+%Nas sub-seções a seguir caracterizamos os dados, definindo critérios para seleção de projetos no GitHub e como será realizada a coleta automática de dados, bem como o tratamento desses para sua visualização.
 
-Nas sub-seções a seguir caracterizamos os dados, definindo critérios para seleção de projetos no GitHub e como será realizada a coleta automática de dados, bem como o tratamento desses para sua visualização.
-
-\subsection{Conjunto de Dados}
-A seleção de projetos armazenados no GitHub se dá não só por sua popularidade, como também pelas facilidades disponibilizadas por tal ambiente, tais como ferramentas de consulta e uma API para extração de informações.
+\section{Conjunto de Dados}
+%A seleção de projetos armazenados no GitHub se dá não só por sua popularidade, como também pelas facilidades disponibilizadas por tal ambiente, tais como ferramentas de consulta e uma API para extração de informações.
 
 Os dados a serem utilizados nesse trabalho já estão disponíveis. Os sistemas foram baixados do GitHub e tiveram seus dados tratados durante o desenvolvimento da pesquisa de um dos membros desse trabalho. Detalhes sobre a seleção e tratamento dos dados é fornecida nas seções a seguir. 
 
-\subsubsection {Seleção de Projetos e Extração dos Dados}
+\subsection {Seleção de Projetos e Extração dos Dados}
 A seleção dos sistemas a serem analisados foi baseado em sua popularidade no GitHub, sinalizada através do número de estrelas que o projeto possui. Essas estrelas são atribuídas por usuários do GitHub a projetos que julguem ser de seu interesse. Incialmente foram clonados 600 projetos GitHub, sendo 100 de cada uma das 6 linguagens mais populares no GitHub. Após uma filtragem inicial, que excluiu projetos pequenos (poucos arquivos),  com pequeno histórico de desenvolvimento (número de commits), com equipe de desenvolvimento pequena (quantidade de desenvolvedores) e projetos com problema de migração (oriundos de outros tipos de sistemas de gerenciamento de versão) restaram 135 projetos a serem analisados.
-
 As principais características do  conjunto de sistemas selecionados é detalhado na Tabela~\ref{tab:sistemas}.
 
 \renewcommand{\tabcolsep}{4pt}
@@ -83,16 +82,17 @@ PHP		&18	&3.413	&126.896	&21.097	\\
 Para a identificação de especialistas no código, a principal informação a ser extraída dos projetos é conjunto de \textit{commits}. De cada \textit{commit} são coletadas as seguintes informações: autor do \textit{commit}, arquivos alterados e tipo da modificação realizada. Esses dados são utilizados para o cálculo da autoria de um arquivo, o qual é detalhado na Seção~\ref{calculo}. Para extrair essas informações dos projetos clonados foram utilizados comandos disponibilizados  pela ferramenta git, tais como o comando git log.
  
 
-\subsubsection{Tratamento dos Dados}\label{calculo}
+\subsection{Tratamento dos Dados}\label{calculo}
 
-O principal tratamento a ser realizado é o cálculo da autoria de um arquivo, baseada nas informações de \textit{commits} extraídas dos projetos. Para isso utilizamos uma abordagem baseada no trabalho de Fritz e outros \cite{Fritz2014}. Nessa abordagem o grau de autoria de código (DOA\footnote{\textit{Degree of Authorship}}) é definido baseado em três tipos diferentes de autoria de um autor \textit{D}:
-\begin{itemize}
-    \item \textbf{primeira autoria}, representando se \textit{D} criou a primeira versão do arquivo;
-    \item \textbf{numero de entregas}, representando mudanças no arquivo, feitas por \textit{D}. Mudancas essas subsequentes a primeira autoria;
-    \item \textbf{aceitações}, representando mudanças no elemento não realizadas por \textit{D}. 
-\end{itemize}
+O principal tratamento a ser realizado é o cálculo da autoria de um arquivo, baseada nas informações de \textit{commits} extraídas dos projetos. Para isso utilizamos uma abordagem baseada no trabalho de Fritz e outros \cite{Fritz2014}. Utilizando essa esta estratégia, o grau de autoria de código (DOA\footnote{\textit{Degree of Authorship}}) é calculado para para cada par desenvolvedor/arquivo. O desenvolvedor com maior valor de DOA para um dado arquivo é considerado seu autor principal. O que precisamos expor nas visualizações a serem realizadas nesse trabalho é como essa autoria é expressada nos sistemas alvo do estudo.
+%Nessa abordagem, o grau de autoria de código (DOA\footnote{\textit{Degree of Authorship}}) é definido baseado em três tipos diferentes de autoria de um autor \textit{D}:
+%\begin{itemize}
+    %\item \textbf{primeira autoria}, representando se \textit{D} criou a primeira versão do arquivo;
+    %\item \textbf{numero de entregas}, representando mudanças no arquivo, feitas por \textit{D}. Mudancas essas subsequentes a primeira autoria;
+    %\item \textbf{aceitações}, representando mudanças no elemento não realizadas por \textit{D}. 
+%\end{itemize}
 
-Utilizando essa esta estratégia para cada par desenvolvedor/arquivo é calculado um valor de DOA. O desenvolvedor com maior valor de DOA para um dado arquivo é considerado seu autor principal. O que precisamos expor nas visualizações a serem realizadas nesse trabalho é como essa autoria é expressada nos sistemas alvo do estudo.
+%Utilizando essa esta estratégia para cada par desenvolvedor/arquivo é calculado um valor de DOA. O desenvolvedor com maior valor de DOA para um dado arquivo é considerado seu autor principal. O que precisamos expor nas visualizações a serem realizadas nesse trabalho é como essa autoria é expressada nos sistemas alvo do estudo.
 
 \section{Propostas de Visualização}
 
