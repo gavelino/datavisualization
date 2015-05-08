@@ -49,7 +49,7 @@ A seleção de projetos armazenados no GitHub se dá não só por sua popularida
 Os dados a serem utilizados nesse trabalho já estão disponíveis. Os sistemas foram baixados do GitHub e tiveram seus dados tratados durante o desenvolvimento da pesquisa de um dos membros desse trabalho. Detalhes sobre a seleção e tratamento dos dados é fornecida nas seções a seguir. 
 
 \subsubsection {Seleção de Projetos e Extração dos Dados}
-A seleção dos sistemas a serem analisados será baseado em sua popularidade no GitHub, sinalizada através do número de estrelas que o projeto possui. Essas estrelas são atribuídas por usuários do GitHub a projetos que julguem ser de seu interesse. Incialmente foram clonados 600 projetos GitHub, sendo 100 de cada uma das 6 linguagens mais populares no GitHub. Após uma filtragem inicial, que excluiu projetos pequenos (poucos arquivos),  com pequeno histórico de desenvolvimento (número de commits), com equipe de desenvolvimento pequena (quantidade de desenvolvedores) e projetos com problema de migração (oriundos de outros tipos de sistemas de gerenciamento de versão) restaram 135 projetos a serem analisados.
+A seleção dos sistemas a serem analisados foi baseado em sua popularidade no GitHub, sinalizada através do número de estrelas que o projeto possui. Essas estrelas são atribuídas por usuários do GitHub a projetos que julguem ser de seu interesse. Incialmente foram clonados 600 projetos GitHub, sendo 100 de cada uma das 6 linguagens mais populares no GitHub. Após uma filtragem inicial, que excluiu projetos pequenos (poucos arquivos),  com pequeno histórico de desenvolvimento (número de commits), com equipe de desenvolvimento pequena (quantidade de desenvolvedores) e projetos com problema de migração (oriundos de outros tipos de sistemas de gerenciamento de versão) restaram 135 projetos a serem analisados.
 
 As principais características do  conjunto de sistemas selecionados é detalhado na Tabela~\ref{tab:sistemas}.
 
@@ -98,8 +98,8 @@ Utilizando essa esta estratégia para cada par desenvolvedor/arquivo é calculad
 
 Para auxiliar na análise dos dados, nesse trabalho, planejamos desenvolver duas visualizações principais:
 \begin{itemize}
-    \item \textbf{Dashboard}: aqui serão apresentadas diferentes visualizações, tais como gráfico de barras e boxplots com objetivo de caracterizar os sistemas estudados com relação ao seu conjunto de desenvolvedores;
-    \item \textbf{Distribuição da autoria}: essa visualização tem como objetivo apresentar como é distribuída a autoria dos arquivos dos sistemas em seu conjunto de módulos (representada através de pastas do sistema). Essa é a principal visualização desse trabalho, devendo ser interativa permitindo navegar pela hierarquia de módula/pastas do sistema. Planeja-se utilizar um especialização do TreeMap para essa visualização. 
+    \item \textbf{Dashboard}: deverá apresentar diferentes visualizações, tais como gráfico de barras e boxplots com objetivo de caracterizar os sistemas estudados com relação ao seu conjunto de desenvolvedores;
+    \item \textbf{Distribuição da autoria}: essa visualização tem como objetivo apresentar como é distribuída a autoria dos arquivos dos sistemas em seu conjunto de módulos (representada através de pastas do sistema). Essa é a principal visualização desse trabalho, devendo ser interativa permitindo navegar pela hierarquia de módula/pastas do sistema. Planeja-se utilizar um especialização do TreeMap~\footnote{http://bl.ocks.org/mbostock/4063582} para essa visualização. 
 \end{itemize}
 \footnotesize
 \bibliographystyle{abbrv}
