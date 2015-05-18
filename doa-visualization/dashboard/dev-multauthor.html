@@ -1,0 +1,204 @@
+<!doctype html>
+<meta charset="utf-8">
+
+  <!-- load D3js -->
+  <script src="/js/d3.js"></script>
+
+  <!-- load D3plus after D3js -->
+  <script src="/js/d3plus.mod.js"></script>
+  
+  <script src="/js/jquery-1.11.2.min.js"></script>
+
+<div id="viz1"></div>
+<div id="viz2"></div>
+<div style="width: 300px; float: left; background-color: Aqua;", id="viz3"> </div>
+<div style="margin-left: 320px; background-color: Silver;", id="viz4"> </div>   
+<div style="width: 300px; float: left; background-color: Aqua;", id="viz5">  </div>
+<div style="margin-left: 320px; background-color: Silver;", id="viz6">  </div>
+
+
+<script>
+  var width = 650;
+  var height = 400;   
+    
+  var hashCode = function(s){
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+  }
+ 
+  var quartile = function(array, percent){ /** @param percent - pass 25 for lower quartile, 75 for upper, 50 for mean. Defaults to 50 */
+             if (!percent) percent = 50;
+             array = array.sort(function(a, b){return a-b});
+             var n = Math.round(array.length * percent / 100);
+             return array[n];
+  }
+    
+    var appData = [];
+    var appData2 = [];
+    var nfiles = [];
+    var sizes = [];
+    
+    d3.csv("dev-multauthor.csv", function(d) {
+      nfiles.push(d.selectedfiles);
+      return {
+        repository: d.repository,
+        language: (d.language == "C" ? "C-Cpp": d.language).replace("C++","C-Cpp"),
+        numfiles: d.selectedfiles,
+        numauthors: parseInt(d.numauthors),
+        nummultauthors: parseInt(d.nummultauthors),
+        numdevelopers: parseInt(d.numdevelopers),
+        percentual: parseFloat((d.numauthors/d.numdevelopers).toFixed(2)),
+        percentualmult: parseFloat((d.nummultauthors/d.numdevelopers).toFixed(2))
+      };
+    }, function(error, rows) {
+        var q1 = quartile(nfiles, 25);
+        var q3 = quartile(nfiles, 75);
+        console.log("Q1 = "+q1+" Q3 = "+q3)
+        rows.forEach(function(x){var n =  parseInt(x.numfiles);
+        x["size"] = n <q1 ? "Small":(n<=q3?"Medium":"Large");sizes.push(x.size);});
+        
+        appData = addAll(rows);
+        appData2 = triplicate(appData);
+        
+        drawBoxPlots();
+    });
+    var addAll = function(rows){
+        var newRows = rows;
+        rows.forEach(function(x){
+            newRows.push({
+                repository: x.repository,
+                language: "All",
+                numfiles: x.selectedfiles,
+                numauthors: x.numauthors,
+                nummultauthors: x.nummultauthors,
+                numdevelopers: x.numdevelopers,
+                percentual: x.percentual,
+                percentualmult: x.percentualmult,
+                size : "All"
+            });
+        });
+        return newRows;
+    }
+    var triplicate = function(rows){
+        var newRows = [];
+        rows.forEach(function(x){
+            newRows.push({
+                repository: x.repository,
+                language: x.language,
+                numfiles: x.selectedfiles,
+                numauthors: x.numauthors,
+                nummultauthors: x.nummultauthors,
+                numdevelopers: x.numdevelopers,
+                percentual: x.percentual,
+                percentualmult: x.percentualmult,
+                size : x.size,
+                "value" : x.numdevelopers,
+                "type" : "Developers"
+            });
+            newRows.push({
+                repository: x.repository,
+                language: x.language,
+                numfiles: x.selectedfiles,
+                numauthors: x.numauthors,
+                nummultauthors: x.nummultauthors,
+                numdevelopers: x.numdevelopers,
+                percentual: x.percentual,
+                percentualmult: x.percentualmult,
+                size : x.size,
+                "value" : x.nummultauthors,
+                "type" : "Multiauthors"
+            });
+            newRows.push({
+                repository: x.repository,
+                language: x.language,
+                numfiles: x.selectedfiles,
+                numauthors: x.numauthors,
+                nummultauthors: x.nummultauthors,
+                numdevelopers: x.numdevelopers,
+                percentual: x.percentual,
+                percentualmult: x.percentualmult,
+                size : x.size,
+                "value" : x.numauthors,
+                "type" : "Authors"
+            });
+        });
+        return newRows;
+    }
+    
+    
+    var drawBoxPlots = function(){
+        var visualization1 = d3plus.viz()
+        .container("#viz1")
+        .data(appData)
+        .type("box")
+        .id("repository")
+        .x("language")
+        .y({"value": "percentual", "range": [0,1]})
+        .width({"value": width})
+        .height({"value": height})
+        .draw();
+        
+        var visualization2 = d3plus.viz()
+        .container("#viz2")
+        .data(appData)
+        .type("box")
+        .id("repository")
+        .x({"value": "language"})
+        .y({"value": "percentualmult", "label": "Percentual (Multiauthor-0.5%)", "range": [0,1]})
+        .width({"value": width})
+        .height({"value": height})
+        .draw();
+        
+        drawSize();
+        
+    }
+    
+    var width2 = 300;
+    var height2 = 250; 
+ 
+    function drawSize(){
+
+        var visualization = d3plus.viz()
+            .container("#viz3")
+            .data(appData2.filter(function(x){return x.size == "Small";}))
+            .type("box")
+            .id("repository")
+            .x({"value":"type", "label": "Small"})
+            .y("value")
+            .width({"value": width2})
+            .height({"value": height2})
+            .draw();
+        var visualization = d3plus.viz()
+            .container("#viz4")
+            .data(appData2.filter(function(x){return x.size == "Medium";}))
+            .type("box")
+            .id("repository")
+            .x({"value":"type", "label": "Medium"})
+            .y("value")
+            .width({"value": width2})
+            .height({"value": height2})
+            .draw();
+        var visualization = d3plus.viz()
+            .container("#viz5")
+            .data(appData2.filter(function(x){return x.size == "Large";}))
+            .type("box")
+            .id("repository")
+            .x({"value":"type", "label": "Large"})
+            .y({"value": "value", "range": [0,2400]})
+            .width({"value": width2})
+            .height({"value": height2})
+            .draw();
+        var visualization = d3plus.viz()
+            .container("#viz6")
+            .data(appData2.filter(function(x){return x.size == "All";}))
+            .type("box")
+            .id("repository")
+            .x({"value":"type", "label": "All"})
+            .y({"value": "value", "range": [0,700]})
+            .width({"value": width2})
+            .height({"value": height2})
+            .draw();
+    }
+
+
+
+</script>
