@@ -57,10 +57,22 @@
 
       
    var colorf = function(x){
-       if (x.index == "0) 0% - 10%")
-           return "gray";
-       else 
-           return "white";
+       var colors =  ["#fff7ec","#fff7ec",
+"#fee8c8",
+"#fdd49e",
+"#fdbb84",
+"#fc8d59",
+"#ef6548",
+"#d7301f",
+"#b30000",
+"#7f0000"]
+       colors = colors.reverse();
+//       if (x.index == "0) 0% - 10%")
+//           return "gray";
+//       else 
+//           return "white";
+       console.log(colors[parseInt(x.index[0])]);
+       return colors[parseInt(x.index[0])];
    }
       
    var visualization = d3plus.viz()
@@ -73,6 +85,7 @@
                         .width({"value": width})
                         .height({"value": height})
                         .color("index")
+                        //.color(colorf)
                         //.aggs({"value": "index"})
     
                        // .ui([{ "method" : "x", "value"  : [ "repository" , "index" ]}])
