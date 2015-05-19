@@ -55,9 +55,14 @@
 
   
 
-  // Step 4: Stacking
-  // Stack your grouped data so that they are now a single bar
-   
+      
+   var colorf = function(x){
+       if (x.index == "0) 0% - 10%")
+           return "gray";
+       else 
+           return "white";
+   }
+      
    var visualization = d3plus.viz()
 						.container("#viz1")
 						.type("bar")
@@ -67,22 +72,23 @@
                         .id(["index","repository"])
                         .width({"value": width})
                         .height({"value": height})
+                        .color("index")
                         //.aggs({"value": "index"})
     
                        // .ui([{ "method" : "x", "value"  : [ "repository" , "index" ]}])
 						.draw();
       
-    var visualization = d3plus.viz()
-						.container("#viz2")
-						.type("stacked")
-						.data(appData)
-						.y({"value":"perc", "label": "Total Files (%)"})
-						.x({"value": "repository"})
-                        //.color(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"])
-                        .id(["index", "repository"])
-                        .width({ "value": width})
-                        .height({"value": height})
-						.draw();
+//    var visualization = d3plus.viz()
+//						.container("#viz2")
+//						.type("stacked")
+//						.data(appData)
+//						.y({"value":"perc", "label": "Total Files (%)"})
+//						.x({"value": "repository"})
+//                        //.color(["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"])
+//                        .id(["index", "repository"])
+//                        .width({ "value": width})
+//                        .height({"value": height})
+//						.draw();
 
  
    

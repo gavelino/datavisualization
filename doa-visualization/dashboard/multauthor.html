@@ -20,10 +20,12 @@
  
     var appData;
     var dataset = [];
-    d3.csv("new-doa-multauthor.csv", function(data) {
+    d3.csv("new-doa-multiauthor.csv", function(data) {
         appData = data;
         //id,repository,language,selectedfiles,nummult05,nummult06,nummult07,nummult081
         
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "10", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult01/d.selectedfiles)*100).toFixed(2))} 
+                                        }));
         dataset = dataset.concat(data.map(function(d) { return {"id" : "20", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult02/d.selectedfiles)*100).toFixed(2))} 
                                         }));
         dataset = dataset.concat(data.map(function(d) { return {"id" : "30", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult03/d.selectedfiles)*100).toFixed(2))} 
