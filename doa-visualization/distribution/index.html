@@ -38,10 +38,12 @@ path {
 
 </style>
 <body>
+<!--
 <form>
   <label><input type="radio" name="mode" value="size"> Size</label>
   <label><input type="radio" name="mode" value="count" checked> Count</label>
 </form>
+-->
 <script src="../js/d3.js"></script>
 <script src="../js/jquery-1.11.2.min.js"></script>
 <script>
@@ -56,7 +58,7 @@ var x = d3.scale.linear()
     .range([0, 2 * Math.PI]);
 
 var y = d3.scale.sqrt()
-    .range([0, radius   +100]);
+    .range([0, radius  + 100]);
 
 var color = d3.scale.category20c();
 var allAuthors;
@@ -67,11 +69,15 @@ var allAuthors;
 function configureColors() {
     var labels = [];
     $.each( getGraphSet(), function(id, value) {
-        labels.push(id);
+        labels.push({"id":id, "value": value});
     });
-    labels.sort();
+    labels.sort(function(a, b){
+                    return  b.value-a.value;
+    });
     //labels.push("other");
-    color.domain(labels);
+    var newlabels = [];
+    labels.forEach(function(x){newlabels.push(x.id);});
+    color.domain(newlabels);
 }
 
 
@@ -98,7 +104,8 @@ var arc = d3.svg.arc()
     .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
     .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
     .innerRadius(function(d) { return Math.max(0, y(d.y)); })
-    .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+    .outerRadius(function(d) { 
+        console.log(d);return Math.max(0, y(d.y + d.dy)); });
 
 // Keep track of the node that is currently being displayed as the root.
 var node;
@@ -157,7 +164,6 @@ d3.json("haml.json", function(error, root) {
       .attr("d", arc)
 //      .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
       .style("fill", function(d) { 
-          console.log(d.author ? d.author : getBestAuthor(d));
           return color(d.author ? d.author : getBestAuthor(d)); })
       .on("click", click)
       .each(stash);
@@ -205,7 +211,7 @@ d3.json("haml.json", function(error, root) {
       .attr("width", radius * 2)
       .attr("height", radius * 2)
     .selectAll("g")
-      .data(color.domain().slice().reverse())
+      .data(color.domain().slice())
     .enter().append("g")
       .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
