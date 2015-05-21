@@ -5,16 +5,18 @@
   <script src="/js/d3.js"></script>
 
   <!-- load D3plus after D3js -->
-  <script src="/js/d3plus.mod.js"></script>
+<!--  <script src="/js/d3plus.mod.js"></script>-->
+  <script src="/js/d3plus.js"></script>
   
   <script src="/js/jquery-1.11.2.min.js"></script>
 
 <div id="viz1"></div>
 <div id="viz2"></div>
-<div style="width: 300px; float: left; background-color: Aqua;", id="viz3"> </div>
-<div style="margin-left: 320px; background-color: Silver;", id="viz4"> </div>   
-<div style="width: 300px; float: left; background-color: Aqua;", id="viz5">  </div>
-<div style="margin-left: 320px; background-color: Silver;", id="viz6">  </div>
+<div id="viz3"></div>
+<div style="width: 300px; float: left;", id="viz4"> </div>
+<div style="margin-left: 320px;", id="viz5"> </div>   
+<div style="width: 300px; float: left;", id="viz6">  </div>
+<div style="margin-left: 320px;", id="viz7">  </div>
 
 
 <script>
@@ -143,22 +145,42 @@
         .type("box")
         .id("repository")
         .x({"value": "language"})
-        .y({"value": "percentualmult", "label": "Percentage (Multiauthor-0.5%)", "range": [0,1]})
+        .y({"value": "percentualmult", "label": "Percentage", "range": [0,1]})
         .width({"value": width})
         .height({"value": height})
         .draw();
         
-        drawSize();
+        drawSize1();
+        drawSize2();
         
+    }
+    var print = function(){
+        var str = "";
+        appData.forEach(function(x) {str += x.repository+";"+x.size+"\n";});
+        console.log(str);
     }
     
     var width2 = 300;
     var height2 = 250; 
  
-    function drawSize(){
+    function drawSize1(){
 
         var visualization = d3plus.viz()
             .container("#viz3")
+            .data(appData)
+            .type("box")
+            .id("repository")
+            .x("size")
+            .y({"value": "percentualmult", "label": "Percentage", "range": [0,1]})
+            .width({"value": width})
+            .height({"value": height})
+            .draw();
+    }
+    
+    function drawSize2(){
+
+        var visualization = d3plus.viz()
+            .container("#viz4")
             .data(appData2.filter(function(x){return x.size == "Small";}))
             .type("box")
             .id("repository")
@@ -168,7 +190,7 @@
             .height({"value": height2})
             .draw();
         var visualization = d3plus.viz()
-            .container("#viz4")
+            .container("#viz5")
             .data(appData2.filter(function(x){return x.size == "Medium";}))
             .type("box")
             .id("repository")
@@ -178,7 +200,7 @@
             .height({"value": height2})
             .draw();
         var visualization = d3plus.viz()
-            .container("#viz5")
+            .container("#viz6")
             .data(appData2.filter(function(x){return x.size == "Large";}))
             .type("box")
             .id("repository")
@@ -188,7 +210,7 @@
             .height({"value": height2})
             .draw();
         var visualization = d3plus.viz()
-            .container("#viz6")
+            .container("#viz7")
             .data(appData2.filter(function(x){return x.size == "All";}))
             .type("box")
             .id("repository")
