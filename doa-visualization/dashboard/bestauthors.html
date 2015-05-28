@@ -22,14 +22,15 @@
   <script>
   var width = 600;
   var height = 500;   
+  var getRepositoryName = function(str){return str.substring(str.search("/")+1, str.length)};
       
   var appData = [];   
   var workload = [];
   var repositories = new Object;    
     console.log("loading file... ");  
-    d3.csv("/data/best-authors-single-add.csv", function(d) {
+    d3.csv("/data/best-authors-single-add-byname.csv", function(d) {
       return {
-        repository: d.fullname.replace("/","-"),
+        repository: getRepositoryName(d.fullname),
         developer: d.username,
         numfiles: d.count
       };
