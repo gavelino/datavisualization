@@ -52,7 +52,7 @@ function WorkloadCtrl($scope) {
                         .x({"value":"repository", "padding" : 0.1 , "label" : false} )
                         .id(["index","repository"])
                         //.width({"value": width})
-                        .height({"value": 400})
+                        //.height({"value": 400})
                         //.color("index")
                         //.color(colorf)
                         //.aggs({"value": "index"})

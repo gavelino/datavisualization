@@ -74,7 +74,7 @@ function AuthorsCtrl($scope) {
                         .type("bar")
                         .data(appData)
                         .y({"value":"perc", "stacked" : true, "label": "Total Files (%)"})
-                        .x({"value":"repository", "padding" : 0.1 , "label" : true} )
+                        .x({"value":"repository", "padding" : 0.1 , "label" : "Repository"} )
                         .id(["index"])
                         .text({"text" : function(x){return x.repository + " :\n" + x.developer;}})
                         .zoom(true)
@@ -82,6 +82,7 @@ function AuthorsCtrl($scope) {
                         //.width({"value": width})
                         //.height({"value": height})
                         .color(colorf)
+                        .legend(false)
                         //.aggs({"value": "index"})
                         
                        // .ui([{ "method" : "x", "value"  : [ "repository" , "index" ]}])
