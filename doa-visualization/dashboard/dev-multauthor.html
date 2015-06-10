@@ -39,7 +39,7 @@
     var nfiles = [];
     var sizes = [];
     
-    d3.csv("dev-multauthor.csv", function(d) {
+    d3.csv("/data/dev-multauthor-alias.csv", function(d) {
       nfiles.push(d.selectedfiles);
       return {
         repository: d.repository,
@@ -128,7 +128,7 @@
     
     
     var drawBoxPlots = function(){
-        var visualization1 = d3plus.viz()
+        /*var visualization1 = d3plus.viz()
         .container("#viz1")
         .data(appData)
         .type("box")
@@ -137,7 +137,7 @@
         .y({"value": "percentual", "range": [0,1], "label": "Percentage"})
         .width({"value": width})
         .height({"value": height})
-        .draw();
+        .draw();*/
         
         var visualization2 = d3plus.viz()
         .container("#viz2")
@@ -151,7 +151,7 @@
         .draw();
         
         drawSize1();
-        drawSize2();
+        //drawSize2();
         
     }
     var print = function(){

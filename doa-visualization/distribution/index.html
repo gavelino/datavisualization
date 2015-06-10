@@ -60,7 +60,7 @@ var x = d3.scale.linear()
 var y = d3.scale.sqrt()
     .range([0, radius  + 100]);
 
-var color = d3.scale.category20c();
+var color = d3.scale.category20();
 var allAuthors;
 // Intervalo de cores disponiveis
 //var color = d3.scale.ordinal()
@@ -152,7 +152,7 @@ function getBestAuthor(node){
     });
     return bestAuthor;
 }
-d3.json("/data/repositories/activeadmin.json", function(error, root) {
+d3.json("/data/repositories/haml.json", function(error, root) {
   node = root;
   allAuthors = getAuthors(root, new Object());
   configureColors();
