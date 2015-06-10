@@ -13,7 +13,7 @@
   
   <script src="/js/jquery-1.11.2.min.js"></script>
     
-</head>
+</head>s
  
 <body>
   <div id="viz1"></div>
@@ -28,7 +28,7 @@
   var workload = [];
   var repositories = new Object;    
     console.log("loading file... ");  
-    d3.csv("/data/best-authors-single-add-byname.csv", function(d) {
+    d3.csv("/data/best-authors-multi-add.csv", function(d) {
       return {
         repository: getRepositoryName(d.fullname),
         developer: d.username,
