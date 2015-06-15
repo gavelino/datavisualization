@@ -5,7 +5,7 @@
   <script src="/js/d3.js"></script>
 
   <!-- load D3plus after D3js -->
-  <script src="/js/d3plus.js"></script>
+  <script src="/js/d3plus-1.7.3.js"></script>
 
 <div id="viz"></div>
 
@@ -15,32 +15,32 @@
   var width = 650;
   var height = 400;   
 
-
+    var getRepositoryName = function(str){return str.substring(str.search("/")+1, str.length)};
 
  
     var appData;
     var dataset = [];
-    d3.csv("/data/new-doa-multiauthor.csv", function(data) {
+    d3.csv("/data/new/doa-multiauthor.csv", function(data) {
         appData = data;
         //id,repository,language,selectedfiles,nummult05,nummult06,nummult07,nummult081
         
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "10", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult01/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "10", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult01/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "20", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult02/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "20", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult02/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "30", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult03/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "30", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult03/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "40", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult04/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "40", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult04/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "50", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult05/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "50", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult05/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "60", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult06/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "60", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult06/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "70", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult07/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "70", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult07/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "80", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult08/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "80", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult08/d.selectedfiles)*100).toFixed(2))} 
                                         }));
-        dataset = dataset.concat(data.map(function(d) { return {"id" : "90", "language": d.language, "repository" : d.repository.replace("/","-"), "value" :                                                                         parseFloat(((d.nummult09/d.selectedfiles)*100).toFixed(2))} 
+        dataset = dataset.concat(data.map(function(d) { return {"id" : "90", "language": d.language, "repository" : getRepositoryName(d.repository), "value" :                                                                         parseFloat(((d.nummult09/d.selectedfiles)*100).toFixed(2))} 
                                         }));
         var visualization = d3plus.viz()
             .container("#viz")

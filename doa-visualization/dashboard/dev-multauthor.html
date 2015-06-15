@@ -6,7 +6,7 @@
 
   <!-- load D3plus after D3js -->
 <!--  <script src="/js/d3plus.mod.js"></script>-->
-  <script src="/js/d3plus.js"></script>
+  <script src="/js/d3plus-1.7.3.js"></script>
   
   <script src="/js/jquery-1.11.2.min.js"></script>
 
@@ -38,13 +38,12 @@
     var appData2 = [];
     var nfiles = [];
     var sizes = [];
-    
-    d3.csv("/data/dev-multauthor-alias.csv", function(d) {
+    d3.csv("/data/new/dev-multauthor-multi-add.csv", function(d) {
       nfiles.push(d.selectedfiles);
       return {
-        repository: d.repository,
+        repository: getRepositoryName(d.fullname),
         language: (d.language == "C" ? "C-Cpp": d.language).replace("C++","C-Cpp"),
-        numfiles: d.selectedfiles,
+        numfiles: d.selectedfiles,      
         numauthors: parseInt(d.numauthors),
         nummultauthors: parseInt(d.nummultauthors),
         numdevelopers: parseInt(d.numdevelopers),
@@ -63,6 +62,9 @@
         
         drawBoxPlots();
     });
+    
+    var getRepositoryName = function(str){return str.substring(str.search("/")+1, str.length)};
+    
     var addAll = function(rows){
         var newRows = rows;
         rows.forEach(function(x){
