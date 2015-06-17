@@ -53,16 +53,21 @@
     }, function(error, rows) {
         var q1 = quartile(nfiles, 25);
         var q3 = quartile(nfiles, 75);
-        console.log("Q1 = "+q1+" Q3 = "+q3)
         rows.forEach(function(x){var n =  parseInt(x.numfiles);
         x["size"] = n <q1 ? "Small":(n<=q3?"Medium":"Large");sizes.push(x.size);});
         
         appData = addAll(rows);
         appData2 = triplicate(appData);
+        //printInfo(appData);
         
         drawBoxPlots();
     });
     
+    var printInfo = function(data){
+        data.forEach(function(x){
+           console.log(x.repository+";"+x.language+";"+x.numfiles+";"+x.nummultauthors+";"+x.numdevelopers+";"+x.percentualmult+";"+x.size); 
+        });
+    }
     var getRepositoryName = function(str){return str.substring(str.search("/")+1, str.length)};
     
     var addAll = function(rows){
@@ -150,6 +155,7 @@
         .y({"value": "percentualmult", "label": "Percentage", "range": [0,1]})
         .width({"value": width})
         .height({"value": height})
+        .order({"value":"language", "sort" : "asc"})
         .draw();
         
         drawSize1();
@@ -162,6 +168,41 @@
         console.log(str);
     }
     
+    var changeOrderByLanguage = function(data){
+        newData = data;        
+        newData.forEach(function(x){
+            if (x.size == "All")
+                x.key = 0;
+            if (x.size == "C-Cpp")
+                x.key = 1;
+            if (x.size == "Java")
+                x.key = 2;
+            if (x.size == "JavaScript")
+                x.key = 3;
+            if (x.size == "PHP")
+                x.key = 4;
+            if (x.size == "Python")
+                x.key = 5;
+            if (x.size == "Ruby")
+                x.key = 6;
+        });
+        return newData;
+    }
+    var changeOrderBySize = function(data){
+        newData = data;        
+        newData.forEach(function(x){
+            if (x.size == "All")
+                x.key = 0;
+            if (x.size == "Small")
+                x.key = 1;
+            if (x.size == "Medium")
+                x.key = 2;
+            if (x.size == "Large")
+                x.key = 3;
+        });
+        return newData;
+    }
+    
     var width2 = 300;
     var height2 = 250; 
  
@@ -169,13 +210,14 @@
 
         var visualization = d3plus.viz()
             .container("#viz3")
-            .data(appData)
+            .data({"value" : changeOrderBySize(appData), "sort":true})
             .type("box")
-            .id("repository")
+            .id(["repository", "size"])
             .x("size")
             .y({"value": "percentualmult", "label": "Percentage", "range": [0,1]})
             .width({"value": width})
             .height({"value": height})
+            .order({"value":"key", "sort" : "asc"})
             .draw();
     }
     
