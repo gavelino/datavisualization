@@ -31,6 +31,10 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/workload',
                 templateUrl: 'templates/workload.html'
             })
+            .state('workload-multi', {
+                url: '/workload-multiauthor',
+                templateUrl: 'templates/workload-multiauthor.html'
+            })
             .state('distribution', {
                 url: '/distribution',
                 templateUrl: 'templates/distribution.html'

@@ -4,10 +4,10 @@
 
 angular
     .module('RDash')
-    .controller('WorkloadCtrl', ['$scope', WorkloadCtrl]);
+    .controller('WorkloadMultiAuthorCtrl', ['$scope', WorkloadMultiAuthorCtrl]);
 
-function WorkloadCtrl($scope) {
-  $('.breadcrumb-links').text('Home / Workload');
+function WorkloadMultiAuthorCtrl($scope) {
+  $('.breadcrumb-links').text('Home / Workload Multi-Author');
 
   var width = 650;
   var height = 400;   
@@ -16,7 +16,7 @@ function WorkloadCtrl($scope) {
   var workload = [];
   var repositories = new Object;    
     console.log("loading file... ");  
-    d3.csv("/data/new/files-author-unique-add.csv", function(d) {
+    d3.csv("/data/new/files-author-multi-add.csv", function(d) {
       return {
         repository: getRepositoryName(d.fullname),
         path: d.path,
@@ -159,5 +159,4 @@ function WorkloadCtrl($scope) {
 //                        .width({ "value": width})
 //                        .height({"value": height})
 //                      .draw();
-
 }

@@ -7,7 +7,7 @@ angular
     .controller('AuthorsCtrl', ['$scope', AuthorsCtrl]);
 
 function AuthorsCtrl($scope) {
-    //$('.page').html('Home / Authors');  
+    $('.breadcrumb-links').text('Home / Authors');
 
     var width = 600;
     var height = 500;   
