@@ -7,7 +7,7 @@ angular
     .controller('DistributionCtrl', ['$scope', DistributionCtrl]);
 
 function DistributionCtrl($scope) {
-  $('.breadcrumb-links').text('Home / Distribution');
+  $('.page-subtitle').text('Home / Distribution');
 
   var width = document.getElementById("viz1").offsetWidth,
   height = width/2,

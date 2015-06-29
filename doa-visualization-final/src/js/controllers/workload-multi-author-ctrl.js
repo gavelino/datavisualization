@@ -7,7 +7,7 @@ angular
     .controller('WorkloadMultiAuthorCtrl', ['$scope', WorkloadMultiAuthorCtrl]);
 
 function WorkloadMultiAuthorCtrl($scope) {
-  $('.breadcrumb-links').text('Home / Workload Multi-Author');
+  $('.page-subtitle').text('Home / Workload Multi-Author');
 
   var width = 650;
   var height = 400;    

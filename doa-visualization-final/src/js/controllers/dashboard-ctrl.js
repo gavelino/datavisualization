@@ -7,7 +7,7 @@ angular
     .controller('DashboardCtrl', ['$scope', DashboardCtrl]);
 
 function DashboardCtrl($scope) {
-    $('.breadcrumb-links').text('Home / Dashboard');
+    $('.page-subtitle').text('Home / Dashboard');
 
     $scope.data = {
         developers: '78561',

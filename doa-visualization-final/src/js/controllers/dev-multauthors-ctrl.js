@@ -7,7 +7,7 @@ angular
     .controller('DevMultAuthorsCtrl', ['$scope', DevMultAuthorsCtrl]);
 
 function DevMultAuthorsCtrl($scope) {
-  $('.breadcrumb-links').text('Home / Dev Multi-Authors');
+  $('.page-subtitle').text('Home / Dev Multi-Authors');
   //var width = 650;
   //var height = 400;   
     

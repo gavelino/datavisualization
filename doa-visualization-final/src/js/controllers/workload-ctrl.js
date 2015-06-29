@@ -7,7 +7,7 @@ angular
     .controller('WorkloadCtrl', ['$scope', WorkloadCtrl]);
 
 function WorkloadCtrl($scope) {
-  $('.breadcrumb-links').text('Home / Workload');
+  $('.page-subtitle').text('Home / Workload');
 
   var width = 650;
   var height = 400;   
