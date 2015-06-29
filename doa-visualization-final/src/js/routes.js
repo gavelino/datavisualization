@@ -23,6 +23,10 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 url: '/authors',
                 templateUrl: 'templates/authors.html'
             })
+            .state('dev-multauthors', {
+                url: '/dev-multauthors',
+                templateUrl: 'templates/dev-multauthors.html'
+            })
             .state('workload', {
                 url: '/workload',
                 templateUrl: 'templates/workload.html'

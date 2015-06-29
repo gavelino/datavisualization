@@ -7,11 +7,11 @@ angular
     .controller('DistributionCtrl', ['$scope', DistributionCtrl]);
 
 function DistributionCtrl($scope) {
-    var width = 960,
-    height = 700,
+    var width = document.getElementById("viz1").offsetWidth,
+    height = width*3/4,
     radius = Math.min(width, height) / 2,
     padding = 5,
-    duration = 1000;;
+    duration = 500;;
 
     var x = d3.scale.linear()
         .range([0, 2 * Math.PI]);

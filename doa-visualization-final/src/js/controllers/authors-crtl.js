@@ -18,7 +18,7 @@ function AuthorsCtrl($scope) {
     var workload = [];
     var repositories = new Object;    
     console.log("loading file... ");  
-    d3.csv("/data/best-authors-single-add-byname.csv", function(d) {
+    d3.csv("data/new/best-authors-multi-add.csv", function(d) {
       return {
         repository: getRepositoryName(d.fullname),
         developer: d.username,
