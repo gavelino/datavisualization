@@ -16,7 +16,7 @@ function WorkloadCtrl($scope) {
   var workload = [];
   var repositories = new Object;    
     console.log("loading file... ");  
-    d3.csv("/data/new/files-author-unique-add.csv", function(d) {
+    d3.csv("data/new/files-author-unique-add.csv", function(d) {
       return {
         repository: getRepositoryName(d.fullname),
         path: d.path,

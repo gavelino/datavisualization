@@ -26,7 +26,7 @@ function DevMultAuthorsCtrl($scope) {
     var appData2 = [];
     var nfiles = [];
     var sizes = [];
-    d3.csv("/data/new/dev-multauthor-multi-add.csv", function(d) {
+    d3.csv("data/new/dev-multauthor-multi-add.csv", function(d) {
       nfiles.push(d.selectedfiles);
       return {
         repository: getRepositoryName(d.fullname),

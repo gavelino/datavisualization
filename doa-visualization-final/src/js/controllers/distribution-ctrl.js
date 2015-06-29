@@ -113,7 +113,7 @@ function DistributionCtrl($scope) {
       });
       return bestAuthor;
   }
-  d3.json("/data/repositories/activeadmin.json", function(error, root) {
+  d3.json("data/repositories/activeadmin.json", function(error, root) {
     node = root;
     allAuthors = getAuthors(root, new Object());
     configureColors();

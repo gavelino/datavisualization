@@ -10,13 +10,13 @@ function WorkloadMultiAuthorCtrl($scope) {
   $('.breadcrumb-links').text('Home / Workload Multi-Author');
 
   var width = 650;
-  var height = 400;   
+  var height = 400;    
       
   var appData = [];   
   var workload = [];
   var repositories = new Object;    
     console.log("loading file... ");  
-    d3.csv("/data/new/files-author-multi-add.csv", function(d) {
+    d3.csv("data/new/files-author-multi-add.csv", function(d) {
       return {
         repository: getRepositoryName(d.fullname),
         path: d.path,
