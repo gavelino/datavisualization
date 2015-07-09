@@ -10,14 +10,14 @@ function AuthorsCtrl($scope) {
     $('.page-subtitle').text('Home / Authors');
 
     var width = 600;
-    var height = 500;   
-    
+    var height = 500;
+
     var getRepositoryName = function(str){return str.substring(str.search("/")+1, str.length)};
-      
-    var appData = [];   
+
+    var appData = [];
     var workload = [];
-    var repositories = new Object;    
-    console.log("loading file... ");  
+    var repositories = new Object;
+    console.log("loading file... ");
     d3.csv("data/new/best-authors-multi-add.csv", function(d) {
       return {
         repository: getRepositoryName(d.fullname),
@@ -25,9 +25,9 @@ function AuthorsCtrl($scope) {
         numfiles: d.count
       };
     }, function(error, rows) {
-        
+
         console.log("file loaded. "+ rows.length);
-        
+
         rows.forEach(function(x){
             if (typeof(repositories[x.repository]) == "undefined"){
                 repositories[x.repository] =  {developers: new Object};
@@ -47,7 +47,7 @@ function AuthorsCtrl($scope) {
                 var nDevs = parseInt(devs[dev]);
                 nRepFiles += isNaN(nDevs)?0:nDevs;
             }
-            
+
             for (dev in devs){;
                 var perc = (devs[dev]/nRepFiles);
                 if (isNaN(perc)) perc = 0;
@@ -55,7 +55,7 @@ function AuthorsCtrl($scope) {
                         "developer" : dev,
                         "perc" : perc});
             }
-               
+
         }
 
         var nMaxDev = 20;
@@ -68,7 +68,7 @@ function AuthorsCtrl($scope) {
                     appData.push({repository: repName, developer: data[i].developer, perc: data[i].perc, index : i} );
             }
         }
-        
+
         var visualization = d3plus.viz()
                         .container("#viz1")
                         .type("bar")
@@ -77,6 +77,7 @@ function AuthorsCtrl($scope) {
                         .x({"value":"repository", "padding" : 0.1 , "label" : "Repository"} )
                         .id(["index"])
                         .text({"text" : function(x){return x.repository + " :\n" + x.developer;}})
+                        .order({"value":"perc", "sort" : "asc"})
                         .zoom(true)
                         //.footer("kjhk")
                         //.width({"value": width})
@@ -84,12 +85,12 @@ function AuthorsCtrl($scope) {
                         .color(colorf)
                         .legend(false)
                         //.aggs({"value": "index"})
-                        
+
                        // .ui([{ "method" : "x", "value"  : [ "repository" , "index" ]}])
                         .draw();
-        
+
     });
-      
+
     var getOrderDevelopers = function(repName){
         var devObjects = repositories[repName].developers;
         var devs = [];
@@ -97,10 +98,10 @@ function AuthorsCtrl($scope) {
             //console.log(d+": "+devObjects[d]);
             devs.push({username : d, files: devObjects[d].files});
         }
-        
+
         return devs.sort(function(a, b){return b.files.length - a.files.length});
-    }  
-    
+    }
+
     var getNumFiles = function(devs){
         var uniqueFiles =  new Object;
         var count = 0;
@@ -115,7 +116,7 @@ function AuthorsCtrl($scope) {
         });
         return count;
     }
-    
+
     var splitDevs = function(devs){
         var size;
         var ndevs = devs.length;
@@ -132,13 +133,13 @@ function AuthorsCtrl($scope) {
                 chunks.push([]);
         }
         chunks.push(newDevs);
-        return chunks;   
+        return chunks;
     }
 var countc = 0;
 var colors =     ["#393b79","#5254a3","#6b6ecf","#9c9ede","#637939","#8ca252","#b5cf6b","#cedb9c","#8c6d31","#bd9e39","#e7ba52","#e7cb94","#843c39","#ad494a","#d6616b","#e7969c","#7b4173","#a55194","#ce6dbd","#de9ed6","#1f77b4",
  "#aec7e8", "#ff7f0e","#ffbb78","#2ca02c","#98df8a","#98df8a","#98df8a","#98df8a","#d62728","#ff9896","#9467bd","#c5b0d5","#8c564b","#c49c94","#e377c2","#f7b6d2","#7f7f7f","#c7c7c7","#bcbd22","#dbdb8d","#17becf","#9edae5"];
-      
-   var colorf = function(x){         
+
+   var colorf = function(x){
        return colors[x.index];
    }
 }

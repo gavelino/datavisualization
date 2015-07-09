@@ -9,19 +9,19 @@ angular
 function DevMultAuthorsCtrl($scope) {
   $('.page-subtitle').text('Home / Dev Multi-Authors');
   //var width = 650;
-  //var height = 400;   
-    
+  //var height = 400;
+
   var hashCode = function(s){
-    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
   }
- 
+
   var quartile = function(array, percent){ /** @param percent - pass 25 for lower quartile, 75 for upper, 50 for mean. Defaults to 50 */
              if (!percent) percent = 50;
              array = array.sort(function(a, b){return a-b});
              var n = Math.round(array.length * percent / 100);
              return array[n];
   }
-    
+
     var appData = [];
     var appData2 = [];
     var nfiles = [];
@@ -29,9 +29,10 @@ function DevMultAuthorsCtrl($scope) {
     d3.csv("data/new/dev-multauthor-multi-add.csv", function(d) {
       nfiles.push(d.selectedfiles);
       return {
-        repository: getRepositoryName(d.fullname),
+        repository: d.fullname,
+        //repository: getRepositoryName(d.fullname),
         language: (d.language == "C" ? "C-Cpp": d.language).replace("C++","C-Cpp"),
-        numfiles: d.selectedfiles,      
+        numfiles: d.selectedfiles,
         numauthors: parseInt(d.numauthors),
         nummultauthors: parseInt(d.nummultauthors),
         numdevelopers: parseInt(d.numdevelopers),
@@ -41,23 +42,24 @@ function DevMultAuthorsCtrl($scope) {
     }, function(error, rows) {
         var q1 = quartile(nfiles, 25);
         var q3 = quartile(nfiles, 75);
+        console.log("Q1="+q1+"  Q3="+q3);
         rows.forEach(function(x){var n =  parseInt(x.numfiles);
         x["size"] = n <q1 ? "Small":(n<=q3?"Medium":"Large");sizes.push(x.size);});
-        
+
         appData = addAll(rows);
         appData2 = triplicate(appData);
-        //printInfo(appData);
-        
+        printInfo(appData);
+
         drawBoxPlots();
     });
-    
+
     var printInfo = function(data){
         data.forEach(function(x){
-           console.log(x.repository+";"+x.language+";"+x.numfiles+";"+x.nummultauthors+";"+x.numdevelopers+";"+x.percentualmult+";"+x.size); 
+           console.log(x.repository+";"+x.language+";"+x.numfiles+";"+x.nummultauthors+";"+x.numdevelopers+";"+x.percentualmult+";"+x.size);
         });
     }
     var getRepositoryName = function(str){return str.substring(str.search("/")+1, str.length)};
-    
+
     var addAll = function(rows){
         var newRows = rows;
         rows.forEach(function(x){
@@ -120,8 +122,8 @@ function DevMultAuthorsCtrl($scope) {
         });
         return newRows;
     }
-    
-    
+
+
     var drawBoxPlots = function(){
         /*var visualization1 = d3plus.viz()
         .container("#viz1")
@@ -133,7 +135,7 @@ function DevMultAuthorsCtrl($scope) {
         .width({"value": width})
         .height({"value": height})
         .draw();*/
-        
+
         var visualization2 = d3plus.viz()
         .container("#viz2")
         .data(appData)
@@ -145,19 +147,19 @@ function DevMultAuthorsCtrl($scope) {
         //.height({"value": height})
         .order({"value":"language", "sort" : "asc"})
         .draw();
-        
+
         drawSize1();
         //drawSize2();
-        
+
     }
     var print = function(){
         var str = "";
         appData.forEach(function(x) {str += x.repository+";"+x.size+"\n";});
         console.log(str);
     }
-    
+
     var changeOrderByLanguage = function(data){
-        newData = data;        
+        newData = data;
         newData.forEach(function(x){
             if (x.size == "All")
                 x.key = 0;
@@ -177,7 +179,7 @@ function DevMultAuthorsCtrl($scope) {
         return newData;
     }
     var changeOrderBySize = function(data){
-        newData = data;        
+        newData = data;
         newData.forEach(function(x){
             if (x.size == "All")
                 x.key = 0;
@@ -190,10 +192,10 @@ function DevMultAuthorsCtrl($scope) {
         });
         return newData;
     }
-    
+
     //var width2 = 300;
-    //var height2 = 250; 
- 
+    //var height2 = 250;
+
     function drawSize1(){
 
         var visualization = d3plus.viz()
@@ -208,7 +210,7 @@ function DevMultAuthorsCtrl($scope) {
             .order({"value":"key", "sort" : "asc"})
             .draw();
     }
-    
+
     function drawSize2(){
 
         var visualization = d3plus.viz()

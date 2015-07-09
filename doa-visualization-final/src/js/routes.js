@@ -40,8 +40,9 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
                 templateUrl: 'templates/distribution.html'
             })
             .state('distribution.details', {
-                url: '/:repository',
-                templateUrl: 'templates/distribution.html'
+                url: '/{repository}',
+                templateUrl: 'templates/distribution.html',
+                controller: 'DistributionCtrl'
             });
     }
 ]);

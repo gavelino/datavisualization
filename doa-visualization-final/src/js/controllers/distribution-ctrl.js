@@ -4,9 +4,9 @@
 
 angular
     .module('RDash')
-    .controller('DistributionCtrl', ['$scope', DistributionCtrl]);
+    .controller('DistributionCtrl', ['$scope', '$stateParams', DistributionCtrl]);
 
-function DistributionCtrl($scope) {
+function DistributionCtrl($scope, $stateParams) {
   $('.page-subtitle').text('Home / Distribution');
 
   var width = document.getElementById("viz1").offsetWidth,
@@ -25,7 +25,7 @@ function DistributionCtrl($scope) {
   var allAuthors;
   // Intervalo de cores disponiveis
   //var color = d3.scale.ordinal()
-      
+
   // Função auxiliar que define as cores para as categorias
   function configureColors() {
       var labels = [];
@@ -42,15 +42,15 @@ function DistributionCtrl($scope) {
   }
 
 
-  var getGraphSet = function(){ 
+  var getGraphSet = function(){
       var newAuthors =  new Object();
       $.each(allAuthors, function(author, values) {
           newAuthors[author] = values;
       });
       return newAuthors;
   };
-      
-      
+
+
   var svg = d3.select("#viz1").append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -65,7 +65,7 @@ function DistributionCtrl($scope) {
       .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
       .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
       .innerRadius(function(d) { return Math.max(0, y(d.y)); })
-      .outerRadius(function(d) { 
+      .outerRadius(function(d) {
           return Math.max(0, y(d.y + d.dy)); });
 
   // Keep track of the node that is currently being displayed as the root.
@@ -73,7 +73,7 @@ function DistributionCtrl($scope) {
   function brightness(rgb) {
     return rgb.r * .299 + rgb.g * .587 + rgb.b * .114;
   }
-      
+
   function isParentOf(p, c) {
     if (p === c) return true;
     if (p.children) {
@@ -83,7 +83,7 @@ function DistributionCtrl($scope) {
     }
     return false;
   }
-      
+
   "#6baed6"
   function getAuthors(node, authors){
       if ("author" in node) {
@@ -91,17 +91,17 @@ function DistributionCtrl($scope) {
           if (author in authors){
               authors[author]++;
           }
-          else 
+          else
               authors[author] = 1;
       }
       if("children" in node){
           node.children.forEach(function(child){
                   authors = getAuthors(child, authors);
-          });                       
+          });
       }
-      return authors;    
-  }    
-      
+      return authors;
+  }
+
   function getBestAuthor(node){
       var bestValue = 0;
       var bestAuthor;
@@ -113,18 +113,25 @@ function DistributionCtrl($scope) {
       });
       return bestAuthor;
   }
-  d3.json("data/repositories/activeadmin.json", function(error, root) {
+
+  var file_name = "data/repositories/haml.json";
+  if ($stateParams.repository) {
+    console.log($stateParams.repository);
+    if ($stateParams.repository == '')
+  }
+
+  d3.json(file_name, function(error, root) {
     node = root;
     allAuthors = getAuthors(root, new Object());
     configureColors();
-      
+
     var nodes = partition.nodes;
     var path = svg.datum(root).selectAll("path")
         .data(nodes)
       .enter().append("path")
         .attr("d", arc)
   //      .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-        .style("fill", function(d) { 
+        .style("fill", function(d) {
             return color(d.author ? d.author : getBestAuthor(d)); })
         .on("click", click)
         .each(stash);
@@ -140,7 +147,7 @@ function DistributionCtrl($scope) {
           .duration(1000)
           .attrTween("d", arcTweenData);
     });
-      
+
     //NEW
     var text = svg.selectAll("text").data(nodes);
     var textEnter = text.enter().append("text")
@@ -166,7 +173,7 @@ function DistributionCtrl($scope) {
         .attr("x", 0)
         .attr("dy", "1em")
         .text(function(d) { return d.depth ? d.name.split(" ")[1] || "" : ""; });
-  //END 
+  //END
       var legend = d3.select("#viz2").append("svg")
         .attr("class", "legend")
         .attr("width", radius * 2)
@@ -191,7 +198,7 @@ function DistributionCtrl($scope) {
       path.transition()
         .duration(1000)
         .attrTween("d", arcTweenZoom(d));
-        
+
       // Somewhat of a hack as we rely on arcTween updating the scales.
       text.style("visibility", function(e) {
             return isParentOf(d, e) ? null : d3.select(this).style("visibility");
@@ -215,10 +222,10 @@ function DistributionCtrl($scope) {
           .each("end", function(e) {
             d3.select(this).style("visibility", isParentOf(d, e) ? null : "hidden");
           });
-      
-        
+
+
     }
-      
+
   });
 
   d3.select(self.frameElement).style("height", height + "px");
@@ -276,5 +283,5 @@ function DistributionCtrl($scope) {
       arr.sort(function(a, b) { return b.value - a.value; });
       //arr.sort(function(a, b) { a.value.toLowerCase().localeCompare(b.value.toLowerCase()); }); //use this to sort as strings
       return arr; // returns array
-  }    
+  }
 }
