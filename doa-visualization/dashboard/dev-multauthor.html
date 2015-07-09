@@ -41,7 +41,8 @@
     d3.csv("/data/new/dev-multauthor-multi-add.csv", function(d) {
       nfiles.push(d.selectedfiles);
       return {
-        repository: getRepositoryName(d.fullname),
+        repository: d.fullname,
+        //repository: getRepositoryName(d.fullname),
         language: (d.language == "C" ? "C-Cpp": d.language).replace("C++","C-Cpp"),
         numfiles: d.selectedfiles,      
         numauthors: parseInt(d.numauthors),
@@ -53,12 +54,13 @@
     }, function(error, rows) {
         var q1 = quartile(nfiles, 25);
         var q3 = quartile(nfiles, 75);
+        console.log("Q1="+q1+"  Q3="+q3)
         rows.forEach(function(x){var n =  parseInt(x.numfiles);
         x["size"] = n <q1 ? "Small":(n<=q3?"Medium":"Large");sizes.push(x.size);});
         
         appData = addAll(rows);
         appData2 = triplicate(appData);
-        //printInfo(appData);
+        printInfo(appData);
         
         drawBoxPlots();
     });
