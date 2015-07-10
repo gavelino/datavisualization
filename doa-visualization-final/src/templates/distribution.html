@@ -1,26 +1,26 @@
-<div class="row">
+<div class="row" ng-controller="DistributionCtrl">
 	<div class="col-lg-12">
 		<rd-widget>
-		    <select class="form-control">
+		    <select class="form-control" ng-model="selectedRepository" ng-change="changeRepository(selectedRepository)">
 	    		<optgroup label="Javascript">
-			      <option>...</option>
+			      <option disabled>...</option>
 			    </optgroup>
 			    <optgroup label="Python">
-			      <option>...</option>
+			      <option disabled>...</option>
 			    </optgroup>
 			    <optgroup label="Ruby">
-			      <option selected>ActiveAdmin</option>
-						<option>Haml</option>
-			      <option>...</option>
+			      <option value="ActiveAdmin" selected>ActiveAdmin</option>
+						<option value="Haml">Haml</option>
+			      <option disabled>...</option>
 			    </optgroup>
 			    <optgroup label="C/C++">
-			      <option>...</option>
+			      <option disabled>...</option>
 			    </optgroup>
 			    <optgroup label="Java">
-			      <option>...</option>
+			      <option disabled>...</option>
 			    </optgroup>
 			    <optgroup label="PHP">
-			      <option>...</option>
+			      <option disabled>...</option>
 			    </optgroup>
 	      	</select>
 	    </rd-widget>
