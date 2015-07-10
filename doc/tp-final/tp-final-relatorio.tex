@@ -9,10 +9,12 @@
 \usepackage{hyperref}
 
 \usepackage{hyphenat}
-%\hyphenation{mate-mática recu-perar}
+%\hyphenation{mate-mática recu-perar }
 
 
 \title{Visualização de Dados -- Relatorio Trabalho Final}
+
+
 
 \author{Danilo Ferreira, Guilherme Avelino, Hudson Borges}
 
@@ -27,15 +29,17 @@
 \maketitle
 
 \begin{abstract}
-Nesse trabalho desenvolvemos um conjunto de visualizações com o intuito de auxiliar na identificação de especialistas de código em sistemas de software. A indentificação do autor/especialista em artefato de código é uma atividade importante   para auxilio na manutenção e evolução de software.\\
+Nesse trabalho desenvolvemos um conjunto de visualizações com o intuito de auxiliar na identificação de especialistas de código em sistemas de software. A indentificação do autor/especialista em artefato de código é uma atividade importante   para auxilio na manutenção e evolução de software.\\ \\ Link para a ferramenta \textbf{\href{http://homepages.dcc.ufmg.br/~hsborges/2015/1/data-visualization/}{http://homepages.dcc.ufmg.br/~hsborges/2015/1/data-visualization/}}.
 \end{abstract}
 
 
 \section{Introdução}
 
-Nos últimos anos o GitHub se tornou uma poderosa ferramenta de colaboração para desenvolvimento de software. Atualmente é o maior repositório de código do mundo, com mais de 6.8 milhões de colaboradores e 15.2 milhões de repositórios armazenados. Muito de sua popularidade de se deve a características como controle de versão distribuído e foco em \textit{social coding} \cite{Dabbish2012}. 
+Nos últimos anos o GitHub se tornou uma poderosa ferramenta de colaboração para desenvolvimento de software. Atualmente é o maior repositório de código do mundo, com mais de 6.8 milhões de colaboradores e 15.2 milhões de repositórios armazenados. Muito de sua popularidade se deve a características como controle de versão distribuído e foco em \textit{social coding} \cite{Dabbish2012}. 
 
-No trabalho aqui apresentado, buscamos desenvolver visualizações que auxiliem na identificação de especialistas em artefatos de software. As visualizações aqui apresentadas foram construídas com objetivo de analisar um conjunto de dados extraídas de sistemas Open Source extraídos do GitHub\footnote{https://github.com/}.
+No trabalho aqui apresentado, buscamos desenvolver visualizações que auxiliem na identificação de especialistas em artefatos de software. As visualizações aqui apresentadas foram construídas com objetivo de analisar um conjunto de dados extraídas de sistemas Open Source armazenados no GitHub\footnote{https://github.com/}. Nossas visualizações tem como foco destacar informações sobre os principais desenvolvedores dos sistemas, aqui denominados autores. Os autores são calculados baseados em informações de commits extraídas dos repositórios de dados e representam desenvolvedores com grande conhecimento sobre um determinado arquivo. A fórmula para cálculo do grau de autoria de um desenvolvedor sobre um arquivo é detalhada no trabalho de Fritz~\cite{Fritz2014}.
+
+
 
 \section{Interface da página}
 
@@ -58,24 +62,32 @@ O dashboard é a primeira visualização apresentada quando os usuários visitam
 
 \subsection{Best Authors}
 
-...
+A visualização \textit{Best Authors} apresentam o percentual de arquivos que os principais autores de cada sistema dominam. Para não poluir excessivamente a tela, são mostrados no máximo 20 autores por sistema. Essa visualização tem como principal objetivo destacar a importância desses autores em cada sistema, sendo possível observar que em muitos dos sistemas analisados esses são responsáveis por 100\% dos arquivos do sistema, demonstrando a concentração da responsabilidade em poucos desenvolvedores.
 
-\subsection{Dev Multi authors}
+Os sistemas foram ordenados tendo como base o percentual de domínio do principal author de cada sistema. Dessa forma, destacamos do lado direito os sistemas onde o principal author tem domínio sobre a maior parte dos arquivos.
 
-...
+\subsection{Dev/Authors}
+
+Aqui são apresentados boxplots para detalhar a distribuição da razão desenvolvedor author nos sistemas analizados. Essa análise permite verificar qual o percentual de desenvolvedores que contribuiu de forma significativa para o desenvolvimento, ganhando autoria sobre pelo menos um arquivo.
+
+Para auxiliar na análise foram gerados boxplots para os valores agrupados por linguagem (primeiro) e por tamanho do sistema (segundo).
+
 
 \subsection{Workload}
 
-...
+Essa visualização tem como objetivo analisar a distribuição da carga de trabalho entre os autores do sistema. Os dados são apresentados dividindo a carga de trabalho (número de arquivos) entre os autores agrupados de 10 em 10\%. Destamos em amarelo os 10\% mais ativos e em azul os seguintes 10\% mais ativos. 
+
+A analize da visualização permite observar que para quase a totalidade dos sistemas estudados a carga de trabalho é má distribuída sendo a maior parte dessa de responsabilidade de apenas 10\% dos autores.
 
 \subsection{Workload - Multi authors}
 
-...
+Essa visualização é uma extensão da visualização anterior, porém nela é considerado que um arquivo pode ter mais que um author. Com isso a soma do percentual de arquivos dominado por cada classe de desenvolvedor acaba superando os 100\%. Essa análise é importante, pois é relativamente comum a existência de arquivos onde mais de um desenvolvedor tem conhecimento similarmente grande sobre um arquivo, podendo ambos serem considerados autor desse.
 
 \subsection{Distribution}
 
-...
+O \textit{Distribution} apresenta como a autoria está distribuída pelo sistema. Seu objetivo é demonstrar de forma hierárquica como está espalhada a autoria. Ela é baseada em \textit{Tree Map}, porém com uma abordagem diferente, na qual os agrupamentos são apresentados de forma circular. Foi desenvolvido para ser interativo, possibilitando navegar na hierarquia de pastas do sistema. Essa navegação é especialmente útil para sistemas grandes, permitindo, inicialmente, visualizar a distribuição da autoria a nível de módulos (diretórios), mas possibilitando navegar até o nível de arquivos.
 
+Na visualização cada cor representa um author diferente, facilitando observar o domínio de cada autor sobre o sistema.
 
 \footnotesize
 \bibliographystyle{abbrv}
